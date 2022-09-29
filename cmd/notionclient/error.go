@@ -1,4 +1,4 @@
-package client
+package notionclient
 
 type ErrorCode string
 

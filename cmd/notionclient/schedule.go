@@ -1,10 +1,10 @@
-package client
+package notionclient
 
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/enrico-laboratory/notion-api-personal-client/internal/models/parsedmodels"
-	"github.com/enrico-laboratory/notion-api-personal-client/internal/models/unparsedmodels"
+	"github.com/enrico-laboratory/notion-api-personal-client/cmd/notionclient/models/parsedmodels"
+	"github.com/enrico-laboratory/notion-api-personal-client/cmd/notionclient/models/unparsedmodels"
 	"io"
 	"net/http"
 )

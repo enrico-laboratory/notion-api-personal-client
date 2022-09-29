@@ -1,4 +1,4 @@
-package client
+package notionclient
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestCastService(t *testing.T) {
+func TestMusicProjectsService(t *testing.T) {
 	client, err := NewClient()
 	if err != nil {
 		log.Fatalln(err)
@@ -16,7 +16,7 @@ func TestCastService(t *testing.T) {
 		// empty body
 		var body string
 
-		result, err := client.Cast.Query(body)
+		result, err := client.MusicProjects.Query(body)
 		t.Log(fmt.Sprintf("Count results: %v", len(result)))
 		assert.Empty(t, err)
 		assert.True(t, len(result) > 3)
@@ -26,16 +26,16 @@ func TestCastService(t *testing.T) {
 		var body string
 		body = `{ 
 				"filter": {
-		              "property": "Role",
-		              "title": {
-		                  "equals": "A"
+		              "property": "Year",
+		              "number": {
+		                  "equals": 2020
 		              }
 				}
 			}`
-		result, err := client.Cast.Query(body)
+		result, err := client.MusicProjects.Query(body)
 		t.Log(fmt.Sprintf("Count results: %v", len(result)))
 		assert.Empty(t, err)
-		assert.True(t, len(result) > 5)
+		assert.True(t, len(result) > 3)
 		//count := 0
 		//for _, musicProject := range result {
 		//	t.Log(musicProject)

@@ -1,4 +1,4 @@
-package client
+package notionclient
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestRepertoireService(t *testing.T) {
+func TestLocationsService(t *testing.T) {
 	client, err := NewClient()
 	if err != nil {
 		log.Fatalln(err)
@@ -16,37 +16,29 @@ func TestRepertoireService(t *testing.T) {
 		// empty body
 		var body string
 
-		result, err := client.Repertoire.Query(body)
+		result, err := client.Locations.Query(body)
 		t.Log(fmt.Sprintf("Count results: %v", len(result)))
 		assert.Empty(t, err)
-		assert.True(t, len(result) > 5)
-		//count := 0
-		//log.Println(result)
-		//for _, task := range result {
-		//	t.Log(task)
-		//	count++
-		//}
-		//t.Log(count)
+		assert.True(t, len(result) > 3)
 	})
 
 	t.Run("QUERY database with time filter", func(t *testing.T) {
 		var body string
 		body = `{ 
 				"filter": {
-		              "property": "Order",
+		              "property": "Location",
 		              "title": {
-		                  "contains": "Something"
+		                  "contains": "Noorderkerk"
 		              }
 				}
 			}`
-		result, err := client.Repertoire.Query(body)
+		result, err := client.Locations.Query(body)
 		t.Log(fmt.Sprintf("Count results: %v", len(result)))
 		assert.Empty(t, err)
-		assert.True(t, len(result) > 1)
+		assert.True(t, len(result) == 1)
 		//count := 0
-		//log.Println(result)
-		//for _, task := range result {
-		//	t.Log(task)
+		//for _, musicProject := range result {
+		//	t.Log(musicProject)
 		//	count++
 		//}
 		//t.Log(count)

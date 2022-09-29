@@ -1,4 +1,4 @@
-package client
+package notionclient
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestMusicProjectsService(t *testing.T) {
+func TestScheduleService(t *testing.T) {
 	client, err := NewClient()
 	if err != nil {
 		log.Fatalln(err)
@@ -16,29 +16,30 @@ func TestMusicProjectsService(t *testing.T) {
 		// empty body
 		var body string
 
-		result, err := client.MusicProjects.Query(body)
+		result, err := client.Schedule.Query(body)
 		t.Log(fmt.Sprintf("Count results: %v", len(result)))
 		assert.Empty(t, err)
-		assert.True(t, len(result) > 3)
+		assert.True(t, len(result) > 400)
 	})
 
 	t.Run("QUERY database with time filter", func(t *testing.T) {
 		var body string
 		body = `{ 
 				"filter": {
-		              "property": "Year",
-		              "number": {
-		                  "equals": 2020
+		              "property": "Do Date",
+		              "date": {
+		                  "before": "2022-01-01"
 		              }
 				}
 			}`
-		result, err := client.MusicProjects.Query(body)
+		result, err := client.Schedule.Query(body)
 		t.Log(fmt.Sprintf("Count results: %v", len(result)))
 		assert.Empty(t, err)
-		assert.True(t, len(result) > 3)
+		assert.True(t, len(result) > 100)
 		//count := 0
-		//for _, musicProject := range result {
-		//	t.Log(musicProject)
+		//log.Println(result)
+		//for _, task := range result {
+		//	t.Log(task)
 		//	count++
 		//}
 		//t.Log(count)
