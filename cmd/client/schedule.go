@@ -12,6 +12,7 @@ import (
 type ScheduleService interface {
 	Query(body string) ([]parsedmodels.Task, error)
 }
+
 type ScheduleClient struct {
 	apiClient *NotionApiClient
 	cfg       config
@@ -71,34 +72,6 @@ func (s *ScheduleClient) Query(body string) ([]parsedmodels.Task, error) {
 
 	return scheduleParsed, nil
 }
-
-//
-//func (s *ScheduleClient) QueryOld(body string) ([]parsedmodels.Task, error) {
-//	resp, err := s.apiClient.request(s.cfg.databases.scheduleID, []byte(body))
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	var nextCursor string
-//	nextCursor = scheduleUnparsed.NextCursor
-//
-//	hasMore := scheduleUnparsed.HasMore
-//
-//	for hasMore {
-//
-//		resp, err := s.apiClient.request(s.cfg.databases.scheduleID, []byte(newBody))
-//		if err != nil {
-//			return nil, err
-//		}
-//
-//		fmt.Println(newBody)
-//		//resp, err := s.Query()
-//	}
-//
-//	var parsedSchedule []parsedmodels.Task
-//
-//	return parsedSchedule, nil
-//}
 
 func parseTask(u *unparsedmodels.Task, p *parsedmodels.Task) {
 	var musicProject []string
@@ -187,16 +160,6 @@ func parseTask(u *unparsedmodels.Task, p *parsedmodels.Task) {
 		}
 	}
 
-	//var choirRollup string
-	//
-	//if len(u.Properties.ChoirRollup.Rollup.Array) == 0 {
-	//	choirRollup = ""
-	//} else if len(u.Properties.ChoirRollup.Rollup.Array[0].) == 0 {
-	//	choirRollup = ""
-	//} else {
-	//	choirRollup = u.Properties.ChoirRollup.Rollup.Array[0].Title[0].PlainText
-	//}
-
 	var taskTitle string
 
 	if len(u.Properties.Task.Title) == 0 {
@@ -219,6 +182,5 @@ func parseTask(u *unparsedmodels.Task, p *parsedmodels.Task) {
 	p.Kanban = kanban
 	p.IsDone = isDone
 	p.LocationId = locationId
-	//p.Choir= choirRollup,
 	p.Title = taskTitle
 }
