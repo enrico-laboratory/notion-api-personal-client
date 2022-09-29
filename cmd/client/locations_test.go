@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestScheduleService(t *testing.T) {
+func TestLocationsService(t *testing.T) {
 	client, err := NewClient()
 	if err != nil {
 		log.Fatalln(err)
@@ -16,30 +16,29 @@ func TestScheduleService(t *testing.T) {
 		// empty body
 		var body string
 
-		result, err := client.Schedule.Query(body)
+		result, err := client.Locations.Query(body)
 		t.Log(fmt.Sprintf("Count results: %v", len(result)))
 		assert.Empty(t, err)
-		assert.True(t, len(result) > 400)
+		assert.True(t, len(result) > 3)
 	})
 
 	t.Run("QUERY database with time filter", func(t *testing.T) {
 		var body string
 		body = `{ 
 				"filter": {
-		              "property": "Do Date",
-		              "date": {
-		                  "before": "2022-01-01"
+		              "property": "Location",
+		              "title": {
+		                  "contains": "Noorderkerk"
 		              }
 				}
 			}`
-		result, err := client.Schedule.Query(body)
+		result, err := client.Locations.Query(body)
 		t.Log(fmt.Sprintf("Count results: %v", len(result)))
 		assert.Empty(t, err)
-		assert.True(t, len(result) > 100)
+		assert.True(t, len(result) == 1)
 		//count := 0
-		//log.Println(result)
-		//for _, task := range result {
-		//	t.Log(task)
+		//for _, musicProject := range result {
+		//	t.Log(musicProject)
 		//	count++
 		//}
 		//t.Log(count)
