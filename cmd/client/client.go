@@ -2,6 +2,7 @@ package client
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/spf13/viper"
@@ -22,9 +23,12 @@ type config struct {
 }
 
 type NotionApiClient struct {
-	httpClient *http.Client
-	config     config
-	Schedule   ScheduleService
+	config        config
+	Schedule      ScheduleService
+	MusicProjects MusicProjectsService
+	Locations     LocationsService
+	Cast          CastService
+	Repertoire    RepertoireService
 }
 
 func NewClient() (*NotionApiClient, error) {
@@ -49,11 +53,15 @@ func NewClient() (*NotionApiClient, error) {
 	cfg.token = viper.GetString("NOTION_TOKEN")
 
 	client := &NotionApiClient{
-		httpClient: &http.Client{},
-		config:     cfg,
+		config: cfg,
 	}
 
 	client.Schedule = &ScheduleClient{apiClient: client, cfg: cfg}
+	client.MusicProjects = &MusicProjectsClient{apiClient: client, cfg: cfg}
+	client.Locations = &LocationsClient{apiClient: client, cfg: cfg}
+	client.Cast = &CastClient{apiClient: client, cfg: cfg}
+	client.Repertoire = &RepertoireClient{apiClient: client, cfg: cfg}
+
 	return client, err
 }
 
@@ -71,9 +79,18 @@ func (c *NotionApiClient) request(databaseID string, body []byte) (*http.Respons
 	r.Header.Add("Content-Type", "application/json")
 	r.Header.Add("accept", "application/json")
 
-	res, err := c.httpClient.Do(r)
+	res, err := http.DefaultClient.Do(r)
 	if err != nil {
 		return nil, err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		var apiErr Error
+		err = json.NewDecoder(res.Body).Decode(&apiErr)
+		if err != nil {
+			return nil, err
+		}
+		return nil, &apiErr
 	}
 
 	return res, nil
