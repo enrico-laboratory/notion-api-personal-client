@@ -3,10 +3,10 @@ package unparsedmodels
 import "time"
 
 type Repertoire struct {
-	Object     string      `json:"object"`
-	Results    []Piece     `json:"results"`
-	NextCursor interface{} `json:"next_cursor"`
-	HasMore    bool        `json:"has_more"`
+	Object     string  `json:"object"`
+	Results    []Piece `json:"results"`
+	NextCursor string  `json:"next_cursor"`
+	HasMore    bool    `json:"has_more"`
 }
 
 type Piece struct {

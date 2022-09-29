@@ -6,7 +6,7 @@ import "time"
 type MusicProjects struct {
 	Object     string         `json:"object"`
 	Results    []MusicProject `json:"results"`
-	NextCursor interface{}    `json:"next_cursor"`
+	NextCursor string         `json:"next_cursor"`
 	HasMore    bool           `json:"has_more"`
 }
 

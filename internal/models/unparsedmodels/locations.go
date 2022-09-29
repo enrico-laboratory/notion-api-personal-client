@@ -3,10 +3,10 @@ package unparsedmodels
 import "time"
 
 type Locations struct {
-	Object     string      `json:"object"`
-	Results    []Location  `json:"results"`
-	NextCursor interface{} `json:"next_cursor"`
-	HasMore    bool        `json:"has_more"`
+	Object     string     `json:"object"`
+	Results    []Location `json:"results"`
+	NextCursor string     `json:"next_cursor"`
+	HasMore    bool       `json:"has_more"`
 }
 
 type Location struct {
