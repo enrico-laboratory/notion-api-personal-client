@@ -5,6 +5,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"log"
 	"testing"
+	"time"
 )
 
 func TestScheduleService(t *testing.T) {
@@ -12,6 +13,7 @@ func TestScheduleService(t *testing.T) {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
 	t.Run("QUERY all database pages", func(t *testing.T) {
 		// empty body
 		var body string
@@ -36,13 +38,32 @@ func TestScheduleService(t *testing.T) {
 		t.Log(fmt.Sprintf("Count results: %v", len(result)))
 		assert.Empty(t, err)
 		assert.True(t, len(result) > 100)
-		//count := 0
-		//log.Println(result)
-		//for _, task := range result {
-		//	t.Log(task)
-		//	count++
-		//}
-		//t.Log(count)
+
+	})
+
+	t.Run("QUERY database with date filter and type", func(t *testing.T) {
+		body := fmt.Sprintf(`{ 
+				"filter": {
+		              "property": "Do Date",
+		              "date": {
+		                  "on_or_after": "%v"
+		              }
+				}
+			}`, time.Now().Format(time.RFC3339))
+		result, err := client.Schedule.Query(body)
+		t.Log(fmt.Sprintf("Count results: %v", len(result)))
+		assert.Empty(t, err)
+
+		count := 0
+		for _, task := range result {
+			t.Log(fmt.Sprintf(`Title: %v
+	Type: %v
+	Start Time: %v
+	End Date: %v`, task.Title, task.Type, task.StartDateAndTime, task.EndDateAndTime))
+			count++
+		}
+		t.Log(count)
+
 	})
 
 }

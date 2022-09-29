@@ -130,7 +130,7 @@ func parseTask(u *unparsedmodels.Task, p *parsedmodels.Task) {
 		endDateAndTime = emptyDate
 	} else {
 		startDateAndTime = u.Properties.DoDate.Date.Start
-		endDateAndTime = u.Properties.DoDate.Date.Start
+		endDateAndTime = u.Properties.DoDate.Date.End
 	}
 
 	var duration string
