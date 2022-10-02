@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/spf13/viper"
 	"net/http"
+	"os"
 )
 
 type config struct {
@@ -32,25 +32,20 @@ type NotionApiClient struct {
 }
 
 func NewClient() (*NotionApiClient, error) {
-	viper.SetConfigName("config")
-	viper.AddConfigPath(".")
-	err := viper.ReadInConfig()
-	if err != nil {
-		return nil, err
-	}
-	if !viper.IsSet("NOTION_TOKEN") {
+
+	if os.Getenv("NOTION_TOKEN") == "" {
 		return nil, errors.New("NOTION_TOKEN not found in the env variables")
 	}
 
 	var cfg config
-	cfg.databases.musicProjectsID = viper.GetString("MUSIC_PROJECT_DATABASE_ID")
-	cfg.databases.repertoireID = viper.GetString("REPERTOIRE_DATABASE_ID")
-	cfg.databases.scheduleID = viper.GetString("TASK_DATABASE_ID")
-	cfg.databases.castID = viper.GetString("CAST_DATABASE_ID")
-	cfg.databases.locationID = viper.GetString("LOCATION_DATABASE_ID")
-	cfg.apiVersion = viper.GetString("API_VERSION")
-	cfg.notionVersion = viper.GetString("NOTION_VERSION")
-	cfg.token = viper.GetString("NOTION_TOKEN")
+	cfg.databases.musicProjectsID = os.Getenv("MUSIC_PROJECT_DATABASE_ID")
+	cfg.databases.repertoireID = os.Getenv("REPERTOIRE_DATABASE_ID")
+	cfg.databases.scheduleID = os.Getenv("TASK_DATABASE_ID")
+	cfg.databases.castID = os.Getenv("CAST_DATABASE_ID")
+	cfg.databases.locationID = os.Getenv("LOCATION_DATABASE_ID")
+	cfg.apiVersion = os.Getenv("API_VERSION")
+	cfg.notionVersion = os.Getenv("NOTION_VERSION")
+	cfg.token = os.Getenv("NOTION_TOKEN")
 
 	client := &NotionApiClient{
 		config: cfg,
@@ -62,7 +57,7 @@ func NewClient() (*NotionApiClient, error) {
 	client.Cast = &CastClient{apiClient: client, cfg: cfg}
 	client.Repertoire = &RepertoireClient{apiClient: client, cfg: cfg}
 
-	return client, err
+	return client, nil
 }
 
 func (c *NotionApiClient) request(databaseID string, body []byte) (*http.Response, error) {
