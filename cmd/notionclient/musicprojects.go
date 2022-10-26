@@ -2,6 +2,7 @@ package notionclient
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/enrico-laboratory/notion-api-personal-client/cmd/notionclient/models/parsedmodels"
 	"github.com/enrico-laboratory/notion-api-personal-client/cmd/notionclient/models/unparsedmodels"
@@ -12,6 +13,7 @@ import (
 type MusicProjectsService interface {
 	Query(body string) ([]parsedmodels.MusicProject, error)
 	GetAll() ([]parsedmodels.MusicProject, error)
+	GetById(projectId string) (parsedmodels.MusicProject, error)
 	GetWithStatus(status string) ([]parsedmodels.MusicProject, error)
 }
 
@@ -82,6 +84,21 @@ func (s *MusicProjectsClient) GetAll() ([]parsedmodels.MusicProject, error) {
 	}
 
 	return query, nil
+}
+
+func (s *MusicProjectsClient) GetById(projectId string) (parsedmodels.MusicProject, error) {
+	query, err := s.Query("")
+	if err != nil {
+		return parsedmodels.MusicProject{}, err
+	}
+
+	for _, project := range query {
+		if project.Id == projectId {
+			return project, nil
+		}
+	}
+
+	return parsedmodels.MusicProject{}, errors.New(fmt.Sprintf("the project with id %v does not exist", projectId))
 }
 
 func (s *MusicProjectsClient) GetWithStatus(status string) ([]parsedmodels.MusicProject, error) {

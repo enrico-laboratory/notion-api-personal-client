@@ -44,6 +44,13 @@ func TestMusicProjectsService(t *testing.T) {
 		//t.Log(count)
 	})
 
+	t.Run("GetById", func(t *testing.T) {
+		projectId := "a890db2a-12a5-4606-886d-fb35283250c6"
+		result, err := client.MusicProjects.GetById(projectId)
+		assert.Empty(t, err)
+		assert.Equal(t, projectId, result.Id)
+	})
+
 	t.Run("GetWithStatus on Going", func(t *testing.T) {
 		status := MusicProjectsStatusOnGoing
 		result, err := client.MusicProjects.GetWithStatus(status)
