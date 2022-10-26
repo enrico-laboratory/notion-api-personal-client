@@ -12,6 +12,8 @@ import (
 
 type RepertoireService interface {
 	Query(body string) ([]parsedmodels.Piece, error)
+	GetAll() ([]parsedmodels.Piece, error)
+	GetByProjectId(projectId string) ([]parsedmodels.Piece, error)
 }
 
 type RepertoireClient struct {
@@ -72,6 +74,33 @@ func (s *RepertoireClient) Query(body string) ([]parsedmodels.Piece, error) {
 	}
 
 	return repertoireParsed, nil
+}
+
+func (s *RepertoireClient) GetAll() ([]parsedmodels.Piece, error) {
+	query, err := s.Query("")
+	if err != nil {
+		return nil, err
+	}
+	return query, nil
+}
+
+func (s *RepertoireClient) GetByProjectId(projectId string) ([]parsedmodels.Piece, error) {
+	query, err := s.GetAll()
+	if err != nil {
+		return nil, err
+	}
+
+	var result []parsedmodels.Piece
+
+	for _, piece := range query {
+		for _, projectIdRepertoire := range piece.MusicProject {
+			if projectIdRepertoire == projectId {
+				result = append(result, piece)
+			}
+		}
+	}
+
+	return result, nil
 }
 
 func parsePiece(u *unparsedmodels.Piece, p *parsedmodels.Piece) {

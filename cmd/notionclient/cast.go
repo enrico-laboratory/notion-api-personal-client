@@ -11,6 +11,8 @@ import (
 
 type CastService interface {
 	Query(body string) ([]parsedmodels.Contact, error)
+	GetAll() ([]parsedmodels.Contact, error)
+	GetByProjectId(projectId string) ([]parsedmodels.Contact, error)
 }
 
 type CastClient struct {
@@ -71,6 +73,33 @@ func (s *CastClient) Query(body string) ([]parsedmodels.Contact, error) {
 	}
 
 	return castParsed, nil
+}
+
+func (s *CastClient) GetAll() ([]parsedmodels.Contact, error) {
+	query, err := s.Query("")
+	if err != nil {
+		return nil, err
+	}
+	return query, nil
+}
+
+func (s *CastClient) GetByProjectId(projectId string) ([]parsedmodels.Contact, error) {
+	query, err := s.GetAll()
+	if err != nil {
+		return nil, err
+	}
+
+	var result []parsedmodels.Contact
+
+	for _, contact := range query {
+		for _, projectIdCast := range contact.MusicProject {
+			if projectIdCast == projectId {
+				result = append(result, contact)
+			}
+		}
+	}
+
+	return result, nil
 }
 
 func parseContact(u *unparsedmodels.Contact, p *parsedmodels.Contact) {

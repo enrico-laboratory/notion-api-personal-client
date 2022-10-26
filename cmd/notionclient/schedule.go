@@ -11,6 +11,8 @@ import (
 
 type ScheduleService interface {
 	Query(body string) ([]parsedmodels.Task, error)
+	GetAll() ([]parsedmodels.Task, error)
+	GetByProjectId(projectId string) ([]parsedmodels.Task, error)
 }
 
 type ScheduleClient struct {
@@ -71,6 +73,33 @@ func (s *ScheduleClient) Query(body string) ([]parsedmodels.Task, error) {
 	}
 
 	return scheduleParsed, nil
+}
+
+func (s *ScheduleClient) GetAll() ([]parsedmodels.Task, error) {
+	query, err := s.Query("")
+	if err != nil {
+		return nil, err
+	}
+	return query, nil
+}
+
+func (s *ScheduleClient) GetByProjectId(projectId string) ([]parsedmodels.Task, error) {
+	query, err := s.GetAll()
+	if err != nil {
+		return nil, err
+	}
+
+	var result []parsedmodels.Task
+
+	for _, task := range query {
+		for _, projectIdTask := range task.MusicProject {
+			if projectIdTask == projectId {
+				result = append(result, task)
+			}
+		}
+	}
+
+	return result, nil
 }
 
 func parseTask(u *unparsedmodels.Task, p *parsedmodels.Task) {

@@ -44,4 +44,12 @@ func TestMusicProjectsService(t *testing.T) {
 		//t.Log(count)
 	})
 
+	t.Run("GetWithStatus on Going", func(t *testing.T) {
+		status := MusicProjectsStatusOnGoing
+		result, err := client.MusicProjects.GetWithStatus(status)
+		t.Log(fmt.Sprintf("Count results: %v", len(result)))
+		assert.Empty(t, err)
+		assert.True(t, len(result) == 3)
+	})
+
 }

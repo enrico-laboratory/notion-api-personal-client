@@ -11,6 +11,8 @@ import (
 
 type MusicProjectsService interface {
 	Query(body string) ([]parsedmodels.MusicProject, error)
+	GetAll() ([]parsedmodels.MusicProject, error)
+	GetWithStatus(status string) ([]parsedmodels.MusicProject, error)
 }
 
 type MusicProjectsClient struct {
@@ -71,6 +73,32 @@ func (s *MusicProjectsClient) Query(body string) ([]parsedmodels.MusicProject, e
 	}
 
 	return scheduleParsed, nil
+}
+
+func (s *MusicProjectsClient) GetAll() ([]parsedmodels.MusicProject, error) {
+	query, err := s.Query("")
+	if err != nil {
+		return nil, err
+	}
+
+	return query, nil
+}
+
+func (s *MusicProjectsClient) GetWithStatus(status string) ([]parsedmodels.MusicProject, error) {
+	body := fmt.Sprintf(`{ 
+				"filter": {
+		              "property": "Status",
+		              "select": {
+		                  "equals": "%v"
+		              }
+				}
+			}`, status)
+	query, err := s.Query(body)
+	if err != nil {
+		return nil, err
+	}
+
+	return query, nil
 }
 
 func parseMusicProject(u *unparsedmodels.MusicProject, p *parsedmodels.MusicProject) {
