@@ -13,7 +13,7 @@ type CastService interface {
 	Query(body string) ([]parsedmodels.Contact, error)
 	GetAll() ([]parsedmodels.Contact, error)
 	GetByProjectId(projectId string) ([]parsedmodels.Contact, error)
-	GetByProjectIdAndStatus(projectId, status string) ([]parsedmodels.Contact, error)
+	GetByProjectIdAndStatus(projectId string, status ...string) ([]parsedmodels.Contact, error)
 }
 
 type CastClient struct {
@@ -103,16 +103,42 @@ func (s *CastClient) GetByProjectId(projectId string) ([]parsedmodels.Contact, e
 	return result, nil
 }
 
-func (s *CastClient) GetByProjectIdAndStatus(projectId, status string) ([]parsedmodels.Contact, error) {
-	body := fmt.Sprintf(`{
-    "filter": {
-        "property": "Status",
-        "select": {
-            "equals": "%v"
-        	}
-    	}
-	}`, status)
-	query, err := s.Query(body)
+func (s *CastClient) GetByProjectIdAndStatus(projectId string, status ...string) ([]parsedmodels.Contact, error) {
+
+	if len(status) == 0 {
+		query, err := s.GetAll()
+		if err != nil {
+			return nil, err
+		}
+
+		var result []parsedmodels.Contact
+
+		for _, contact := range query {
+			for _, projectIdCast := range contact.MusicProject {
+				if projectIdCast == projectId {
+					result = append(result, contact)
+				}
+			}
+		}
+		return result, nil
+	}
+
+	var or []Or
+	for _, value := range status {
+		o := Or{
+			Property: "Status",
+			Select: struct {
+				Equals string `json:"equals"`
+			}{Equals: value},
+		}
+		or = append(or, o)
+	}
+	var filterOrStatusObject FilterOrSelect
+	filterOrStatusObject.Filter.Or = or
+
+	body, err := json.Marshal(&filterOrStatusObject)
+
+	query, err := s.Query(string(body))
 	if err != nil {
 		return nil, err
 	}
@@ -126,9 +152,7 @@ func (s *CastClient) GetByProjectIdAndStatus(projectId, status string) ([]parsed
 			}
 		}
 	}
-
 	return result, nil
-
 }
 
 func parseContact(u *unparsedmodels.Contact, p *parsedmodels.Contact) {

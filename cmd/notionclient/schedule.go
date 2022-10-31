@@ -124,19 +124,6 @@ func (s *ScheduleClient) GetByProjectIdAndType(projectId string, t ...string) ([
 		return result, nil
 	}
 
-	type Or struct {
-		Property string `json:"property"`
-		Select   struct {
-			Equals string `json:"equals"`
-		} `json:"select"`
-	}
-
-	type FilterOrType struct {
-		Filter struct {
-			Or []Or `json:"or"`
-		} `json:"filter"`
-	}
-
 	var or []Or
 	for _, value := range t {
 		o := Or{
@@ -147,7 +134,7 @@ func (s *ScheduleClient) GetByProjectIdAndType(projectId string, t ...string) ([
 		}
 		or = append(or, o)
 	}
-	var filterOrTypeObject FilterOrType
+	var filterOrTypeObject FilterOrSelect
 
 	filterOrTypeObject.Filter.Or = or
 
