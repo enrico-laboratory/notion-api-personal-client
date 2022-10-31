@@ -13,6 +13,7 @@ type ScheduleService interface {
 	Query(body string) ([]parsedmodels.Task, error)
 	GetAll() ([]parsedmodels.Task, error)
 	GetByProjectId(projectId string) ([]parsedmodels.Task, error)
+	GetByProjectIdAndType(projectId string, t ...string) ([]parsedmodels.Task, error)
 }
 
 type ScheduleClient struct {
@@ -85,6 +86,77 @@ func (s *ScheduleClient) GetAll() ([]parsedmodels.Task, error) {
 
 func (s *ScheduleClient) GetByProjectId(projectId string) ([]parsedmodels.Task, error) {
 	query, err := s.GetAll()
+	if err != nil {
+		return nil, err
+	}
+
+	var result []parsedmodels.Task
+
+	for _, task := range query {
+		for _, projectIdTask := range task.MusicProject {
+			if projectIdTask == projectId {
+				result = append(result, task)
+			}
+		}
+	}
+
+	return result, nil
+}
+
+func (s *ScheduleClient) GetByProjectIdAndType(projectId string, t ...string) ([]parsedmodels.Task, error) {
+
+	if len(t) == 0 {
+		query, err := s.GetAll()
+		if err != nil {
+			return nil, err
+		}
+
+		var result []parsedmodels.Task
+
+		for _, task := range query {
+			for _, projectIdTask := range task.MusicProject {
+				if projectIdTask == projectId {
+					result = append(result, task)
+				}
+			}
+		}
+
+		return result, nil
+	}
+
+	type Or struct {
+		Property string `json:"property"`
+		Select   struct {
+			Equals string `json:"equals"`
+		} `json:"select"`
+	}
+
+	type FilterOrType struct {
+		Filter struct {
+			Or []Or `json:"or"`
+		} `json:"filter"`
+	}
+
+	var or []Or
+	for _, value := range t {
+		o := Or{
+			Property: "Type",
+			Select: struct {
+				Equals string `json:"equals"`
+			}{Equals: value},
+		}
+		or = append(or, o)
+	}
+	var filterOrTypeObject FilterOrType
+
+	filterOrTypeObject.Filter.Or = or
+
+	by, err := json.Marshal(&filterOrTypeObject)
+	if err != nil {
+		return nil, err
+	}
+
+	query, err := s.Query(string(by))
 	if err != nil {
 		return nil, err
 	}

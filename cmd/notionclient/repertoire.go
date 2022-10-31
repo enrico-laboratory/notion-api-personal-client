@@ -14,6 +14,7 @@ type RepertoireService interface {
 	Query(body string) ([]parsedmodels.Piece, error)
 	GetAll() ([]parsedmodels.Piece, error)
 	GetByProjectId(projectId string) ([]parsedmodels.Piece, error)
+	GetByProjectIdAndSelected(projectId string) ([]parsedmodels.Piece, error)
 }
 
 type RepertoireClient struct {
@@ -77,6 +78,7 @@ func (s *RepertoireClient) Query(body string) ([]parsedmodels.Piece, error) {
 }
 
 func (s *RepertoireClient) GetAll() ([]parsedmodels.Piece, error) {
+
 	query, err := s.Query("")
 	if err != nil {
 		return nil, err
@@ -86,6 +88,33 @@ func (s *RepertoireClient) GetAll() ([]parsedmodels.Piece, error) {
 
 func (s *RepertoireClient) GetByProjectId(projectId string) ([]parsedmodels.Piece, error) {
 	query, err := s.GetAll()
+	if err != nil {
+		return nil, err
+	}
+
+	var result []parsedmodels.Piece
+
+	for _, piece := range query {
+		for _, projectIdRepertoire := range piece.MusicProject {
+			if projectIdRepertoire == projectId {
+				result = append(result, piece)
+			}
+		}
+	}
+
+	return result, nil
+}
+
+func (s *RepertoireClient) GetByProjectIdAndSelected(projectId string) ([]parsedmodels.Piece, error) {
+	body := `{
+    "filter": {
+        "property": "Selected",
+        "checkbox": {
+            "equals": "true"
+        	}
+    	}
+	}`
+	query, err := s.Query(body)
 	if err != nil {
 		return nil, err
 	}

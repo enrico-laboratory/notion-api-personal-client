@@ -13,6 +13,7 @@ type CastService interface {
 	Query(body string) ([]parsedmodels.Contact, error)
 	GetAll() ([]parsedmodels.Contact, error)
 	GetByProjectId(projectId string) ([]parsedmodels.Contact, error)
+	GetByProjectIdAndStatus(projectId, status string) ([]parsedmodels.Contact, error)
 }
 
 type CastClient struct {
@@ -100,6 +101,34 @@ func (s *CastClient) GetByProjectId(projectId string) ([]parsedmodels.Contact, e
 	}
 
 	return result, nil
+}
+
+func (s *CastClient) GetByProjectIdAndStatus(projectId, status string) ([]parsedmodels.Contact, error) {
+	body := fmt.Sprintf(`{
+    "filter": {
+        "property": "Status",
+        "select": {
+            "equals": "%v"
+        	}
+    	}
+	}`, status)
+	query, err := s.Query(body)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []parsedmodels.Contact
+
+	for _, contact := range query {
+		for _, projectIdCast := range contact.MusicProject {
+			if projectIdCast == projectId {
+				result = append(result, contact)
+			}
+		}
+	}
+
+	return result, nil
+
 }
 
 func parseContact(u *unparsedmodels.Contact, p *parsedmodels.Contact) {

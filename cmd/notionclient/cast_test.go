@@ -51,4 +51,12 @@ func TestCastService(t *testing.T) {
 		assert.True(t, len(result) > 5)
 	})
 
+	t.Run("GetByProjectIdAndStatus", func(t *testing.T) {
+		projectId := "a890db2a-12a5-4606-886d-fb35283250c6"
+		status := CastStatusConfirmed
+		result, err := client.Cast.GetByProjectIdAndStatus(projectId, status)
+		assert.Empty(t, err)
+		assert.True(t, len(result) > 5)
+	})
+
 }
