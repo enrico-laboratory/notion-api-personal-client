@@ -110,7 +110,7 @@ func (s *RepertoireClient) GetByProjectIdAndSelected(projectId string) ([]parsed
     "filter": {
         "property": "Selected",
         "checkbox": {
-            "equals": "true"
+            "equals": true
         	}
     	}
 	}`
