@@ -256,6 +256,13 @@ func parseTask(u *unparsedmodels.Task, p *parsedmodels.Task) {
 		taskTitle = u.Properties.Task.Title[0].PlainText
 	}
 
+	var notes string
+	if len(u.Properties.Notes.RichText) == 0 {
+		notes = ""
+	} else {
+		notes = u.Properties.Notes.RichText[0].PlainText
+	}
+
 	p.Id = u.ID
 	p.CreatedTime = u.CreatedTime
 	p.LastEditedTime = u.LastEditedTime
@@ -271,4 +278,5 @@ func parseTask(u *unparsedmodels.Task, p *parsedmodels.Task) {
 	p.IsDone = isDone
 	p.LocationId = locationId
 	p.Title = taskTitle
+	p.Notes = notes
 }

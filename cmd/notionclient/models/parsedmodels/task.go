@@ -19,4 +19,5 @@ type Task struct {
 	LocationId       []string  `json:"locationId"`
 	Choir            string    `json:"choir"`
 	Title            string    `json:"title"`
+	Notes            string    `json:"notes"`
 }
