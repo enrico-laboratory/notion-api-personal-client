@@ -33,4 +33,5 @@ type Piece struct {
 	Instrument     []string  `json:"instrument"`
 	Length         float64   `json:"length"`
 	Composer       string    `json:"composer"`
+	Notes          string    `json:"notes"`
 }

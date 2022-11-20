@@ -331,6 +331,13 @@ func parsePiece(u *unparsedmodels.Piece, p *parsedmodels.Piece) {
 		composer = strings.TrimSpace(u.Properties.ComposerRollup.Rollup.Array[0].RichText[0].PlainText)
 	}
 
+	var notes string
+	if len(u.Properties.Notes.RichText) == 0 {
+		notes = ""
+	} else {
+		notes = u.Properties.Notes.RichText[0].PlainText
+	}
+
 	p.Id = u.ID
 	p.CreatedTime = u.CreatedTime
 	p.LastEditedTime = u.LastEditedTime
@@ -359,5 +366,6 @@ func parsePiece(u *unparsedmodels.Piece, p *parsedmodels.Piece) {
 	p.Instrument = instruments
 	p.Length = length
 	p.Composer = composer
+	p.Notes = notes
 
 }
