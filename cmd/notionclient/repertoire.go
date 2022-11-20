@@ -331,11 +331,17 @@ func parsePiece(u *unparsedmodels.Piece, p *parsedmodels.Piece) {
 		composer = strings.TrimSpace(u.Properties.ComposerRollup.Rollup.Array[0].RichText[0].PlainText)
 	}
 
-	var notes string
-	if len(u.Properties.Notes.RichText) == 0 {
-		notes = ""
+	var notesDivisi string
+	if len(u.Properties.NotesDivisi.RichText) == 0 {
+		notesDivisi = ""
 	} else {
-		notes = u.Properties.Notes.RichText[0].PlainText
+		notesDivisi = u.Properties.NotesDivisi.RichText[0].PlainText
+	}
+	var notesRepertoire string
+	if len(u.Properties.NotesRepertoire.RichText) == 0 {
+		notesRepertoire = ""
+	} else {
+		notesRepertoire = u.Properties.NotesRepertoire.RichText[0].PlainText
 	}
 
 	p.Id = u.ID
@@ -366,6 +372,6 @@ func parsePiece(u *unparsedmodels.Piece, p *parsedmodels.Piece) {
 	p.Instrument = instruments
 	p.Length = length
 	p.Composer = composer
-	p.Notes = notes
-
+	p.NotesDivisi = notesDivisi
+	p.NotesRepertoire = notesRepertoire
 }
