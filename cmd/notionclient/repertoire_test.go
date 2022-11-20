@@ -35,7 +35,7 @@ func TestRepertoireService(t *testing.T) {
 				"filter": {
 		              "property": "Order",
 		              "title": {
-		                  "contains": "Something"
+		                  "contains": "01"
 		              }
 				}
 			}`

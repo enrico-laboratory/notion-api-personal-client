@@ -53,16 +53,7 @@ func TestScheduleService(t *testing.T) {
 		result, err := client.Schedule.Query(body)
 		t.Log(fmt.Sprintf("Count results: %v", len(result)))
 		assert.Empty(t, err)
-
-		count := 0
-		for _, task := range result {
-			t.Log(fmt.Sprintf(`Title: %v
-	Type: %v
-	Start Time: %v
-	End Date: %v`, task.Title, task.Type, task.StartDateAndTime, task.EndDateAndTime))
-			count++
-		}
-		t.Log(count)
+		assert.True(t, len(result) > 3)
 
 	})
 
