@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"log"
+	"os"
 	"testing"
 )
 
 func TestRepertoireService(t *testing.T) {
-	client, err := NewClient()
+	client, err := NewClient(os.Getenv("NOTION_TOKEN"))
 	if err != nil {
 		log.Fatalln(err)
 	}

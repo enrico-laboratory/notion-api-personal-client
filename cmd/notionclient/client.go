@@ -31,21 +31,21 @@ type NotionApiClient struct {
 	Repertoire    RepertoireService
 }
 
-func NewClient() (*NotionApiClient, error) {
+func NewClient(token string) (*NotionApiClient, error) {
 
 	if os.Getenv("NOTION_TOKEN") == "" {
 		return nil, errors.New("NOTION_TOKEN not found in the env variables")
 	}
 
 	var cfg config
-	cfg.databases.musicProjectsID = os.Getenv("MUSIC_PROJECT_DATABASE_ID")
-	cfg.databases.repertoireID = os.Getenv("REPERTOIRE_DATABASE_ID")
-	cfg.databases.scheduleID = os.Getenv("TASK_DATABASE_ID")
-	cfg.databases.castID = os.Getenv("CAST_DATABASE_ID")
-	cfg.databases.locationID = os.Getenv("LOCATION_DATABASE_ID")
-	cfg.apiVersion = os.Getenv("API_VERSION")
-	cfg.notionVersion = os.Getenv("NOTION_VERSION")
-	cfg.token = os.Getenv("NOTION_TOKEN")
+	cfg.databases.musicProjectsID = musicProjectDatabaseId
+	cfg.databases.repertoireID = repertoireDatabaseId
+	cfg.databases.scheduleID = taskDatabaseId
+	cfg.databases.castID = castDatabaseId
+	cfg.databases.locationID = locationDatabaseId
+	cfg.apiVersion = apiVersion
+	cfg.notionVersion = notionVersion
+	cfg.token = token
 
 	client := &NotionApiClient{
 		config: cfg,
