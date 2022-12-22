@@ -15,6 +15,7 @@ type MusicProjectsService interface {
 	GetAll() ([]parsedmodels.MusicProject, error)
 	GetById(projectId string) (parsedmodels.MusicProject, error)
 	GetWithStatus(status string) ([]parsedmodels.MusicProject, error)
+	GetWithStatusNot(status string) ([]parsedmodels.MusicProject, error)
 }
 
 type MusicProjectsClient struct {
