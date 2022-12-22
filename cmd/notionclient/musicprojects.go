@@ -124,7 +124,7 @@ func (s *MusicProjectsClient) GetWithStatusNot(status string) ([]parsedmodels.Mu
 				"filter": {
 		              "property": "Status",
 		              "select": {
-		                  "does_not_equals": "%v"
+		                  "does_not_equal": "%v"
 		              }
 				}
 			}`, status)
