@@ -118,6 +118,23 @@ func (s *MusicProjectsClient) GetWithStatus(status string) ([]parsedmodels.Music
 	return query, nil
 }
 
+func (s *MusicProjectsClient) GetWithStatusNot(status string) ([]parsedmodels.MusicProject, error) {
+	body := fmt.Sprintf(`{ 
+				"filter": {
+		              "property": "Status",
+		              "select": {
+		                  "does_not_equals": "%v"
+		              }
+				}
+			}`, status)
+	query, err := s.Query(body)
+	if err != nil {
+		return nil, err
+	}
+
+	return query, nil
+}
+
 func parseMusicProject(u *unparsedmodels.MusicProject, p *parsedmodels.MusicProject) {
 
 	var description string
