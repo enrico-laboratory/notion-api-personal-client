@@ -146,6 +146,12 @@ func parseMusicProject(u *unparsedmodels.MusicProject, p *parsedmodels.MusicProj
 		description = u.Properties.Description.RichText[0].PlainText
 	}
 
+	var excerpt string
+	if len(u.Properties.Excerpt.RichText) == 0 {
+		excerpt = ""
+	} else {
+		excerpt = u.Properties.Excerpt.RichText[0].PlainText
+	}
 	var choirRollup string
 
 	if len(u.Properties.ChoirRollup.Rollup.Array) == 0 {
@@ -161,4 +167,6 @@ func parseMusicProject(u *unparsedmodels.MusicProject, p *parsedmodels.MusicProj
 	p.Status = u.Properties.Status.Select.Name
 	p.Description = description
 	p.ChoirRollup = choirRollup
+	p.Excerpt = excerpt
+	p.Poster = u.Properties.Poster.URL
 }

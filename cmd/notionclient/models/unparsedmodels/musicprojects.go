@@ -224,6 +224,32 @@ type MusicProject struct {
 				Href      interface{} `json:"href"`
 			} `json:"title"`
 		} `json:"Title"`
+		Poster struct {
+			ID   string `json:"id"`
+			Type string `json:"type"`
+			URL  string `json:"url"`
+		} `json:"Poster"`
+		Excerpt struct {
+			ID       string `json:"id"`
+			Type     string `json:"type"`
+			RichText []struct {
+				Type string `json:"type"`
+				Text struct {
+					Content string      `json:"content"`
+					Link    interface{} `json:"link"`
+				} `json:"text"`
+				Annotations struct {
+					Bold          bool   `json:"bold"`
+					Italic        bool   `json:"italic"`
+					Strikethrough bool   `json:"strikethrough"`
+					Underline     bool   `json:"underline"`
+					Code          bool   `json:"code"`
+					Color         string `json:"color"`
+				} `json:"annotations"`
+				PlainText string      `json:"plain_text"`
+				Href      interface{} `json:"href"`
+			} `json:"rich_text"`
+		} `json:"Excerpt"`
 	} `json:"properties"`
 	URL string `json:"url"`
 }
