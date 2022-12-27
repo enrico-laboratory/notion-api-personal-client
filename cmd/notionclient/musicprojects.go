@@ -16,6 +16,7 @@ type MusicProjectsService interface {
 	GetById(projectId string) (parsedmodels.MusicProject, error)
 	GetWithStatus(status string) ([]parsedmodels.MusicProject, error)
 	GetWithStatusNot(status string) ([]parsedmodels.MusicProject, error)
+	GetPublished() ([]parsedmodels.MusicProject, error)
 }
 
 type MusicProjectsClient struct {
@@ -128,6 +129,23 @@ func (s *MusicProjectsClient) GetWithStatusNot(status string) ([]parsedmodels.Mu
 		              }
 				}
 			}`, status)
+	query, err := s.Query(body)
+	if err != nil {
+		return nil, err
+	}
+
+	return query, nil
+}
+
+func (s *MusicProjectsClient) GetPublished() ([]parsedmodels.MusicProject, error) {
+	body := fmt.Sprintf(`{ 
+				"filter": {
+		              "property": "Published",
+		              "checkbox": {
+		                  "equals": true
+		              }
+				}
+			}`)
 	query, err := s.Query(body)
 	if err != nil {
 		return nil, err
