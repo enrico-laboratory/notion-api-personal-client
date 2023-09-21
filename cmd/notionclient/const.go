@@ -15,4 +15,7 @@ const (
 	castDatabaseId               = "065066b1d60a478a9d8a2725b2fee660"
 	locationDatabaseId           = "264aecbf12ec4d439a306d3360a70001"
 	taskDatabaseId               = "b25b103631b34fc2a8804eec0b2b3813"
+	choirDabaseId                = "97be022740354a03b71a6e10da34fcb6"
+	resourceDatabase             = "databases"
+	resourcePage                 = "pages"
 )
