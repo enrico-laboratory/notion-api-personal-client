@@ -17,7 +17,7 @@ func TestMusicProjectsService(t *testing.T) {
 		// empty body
 		var body string
 
-		result, err := client.MusicProjects.Query(body)
+		result, err := client.MusicProjects.query(body)
 		t.Log(fmt.Sprintf("Count results: %v", len(result)))
 		assert.Empty(t, err)
 		assert.True(t, len(result) > 3)
@@ -33,7 +33,7 @@ func TestMusicProjectsService(t *testing.T) {
 		              }
 				}
 			}`
-		result, err := client.MusicProjects.Query(body)
+		result, err := client.MusicProjects.query(body)
 		t.Log(fmt.Sprintf("Count results: %v", len(result)))
 		assert.Empty(t, err)
 		assert.True(t, len(result) > 3)
@@ -66,4 +66,15 @@ func TestMusicProjectsService(t *testing.T) {
 		assert.True(t, len(result) > 2)
 	})
 
+	t.Run("Create test database", func(t *testing.T) {
+		title := "test"
+		choirId := "f7883d7baee1467a88463cc6fdac2ee9"
+		status := "On Going"
+		year := 1999
+		result, err := client.MusicProjects.CreateProject(title, choirId, status, year)
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Log(result)
+	})
 }

@@ -11,12 +11,13 @@ import (
 )
 
 type MusicProjectsService interface {
-	Query(body string) ([]parsedmodels.MusicProject, error)
+	query(body string) ([]parsedmodels.MusicProject, error)
 	GetAll() ([]parsedmodels.MusicProject, error)
 	GetById(projectId string) (parsedmodels.MusicProject, error)
 	GetWithStatus(status string) ([]parsedmodels.MusicProject, error)
 	GetWithStatusNot(status string) ([]parsedmodels.MusicProject, error)
 	GetPublished() ([]parsedmodels.MusicProject, error)
+	CreateProject(title, choirId, status string, year int) (int, error)
 }
 
 type MusicProjectsClient struct {
@@ -24,7 +25,7 @@ type MusicProjectsClient struct {
 	cfg       config
 }
 
-func (s *MusicProjectsClient) Query(body string) ([]parsedmodels.MusicProject, error) {
+func (s *MusicProjectsClient) query(body string) ([]parsedmodels.MusicProject, error) {
 	var scheduleParsed []parsedmodels.MusicProject
 	var err error
 
@@ -39,7 +40,7 @@ func (s *MusicProjectsClient) Query(body string) ([]parsedmodels.MusicProject, e
 		var musicProjectsUnparsed unparsedmodels.MusicProjects
 
 		if count == 0 {
-			resp, err = s.apiClient.request(s.cfg.databases.musicProjectsID, []byte(body))
+			resp, err = s.apiClient.databaseQuery(s.cfg.databases.musicProjectsID, []byte(body))
 			if err != nil {
 				return nil, err
 			}
@@ -51,7 +52,7 @@ func (s *MusicProjectsClient) Query(body string) ([]parsedmodels.MusicProject, e
 			} else {
 				newBody = fmt.Sprintf("%v%v,%v", body[:1], startCursor, body[1:])
 			}
-			resp, err = s.apiClient.request(s.cfg.databases.musicProjectsID, []byte(newBody))
+			resp, err = s.apiClient.databaseQuery(s.cfg.databases.musicProjectsID, []byte(newBody))
 			if err != nil {
 				return nil, err
 			}
@@ -80,7 +81,7 @@ func (s *MusicProjectsClient) Query(body string) ([]parsedmodels.MusicProject, e
 }
 
 func (s *MusicProjectsClient) GetAll() ([]parsedmodels.MusicProject, error) {
-	query, err := s.Query("")
+	query, err := s.query("")
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +90,7 @@ func (s *MusicProjectsClient) GetAll() ([]parsedmodels.MusicProject, error) {
 }
 
 func (s *MusicProjectsClient) GetById(projectId string) (parsedmodels.MusicProject, error) {
-	query, err := s.Query("")
+	query, err := s.query("")
 	if err != nil {
 		return parsedmodels.MusicProject{}, err
 	}
@@ -112,7 +113,7 @@ func (s *MusicProjectsClient) GetWithStatus(status string) ([]parsedmodels.Music
 		              }
 				}
 			}`, status)
-	query, err := s.Query(body)
+	query, err := s.query(body)
 	if err != nil {
 		return nil, err
 	}
@@ -129,7 +130,7 @@ func (s *MusicProjectsClient) GetWithStatusNot(status string) ([]parsedmodels.Mu
 		              }
 				}
 			}`, status)
-	query, err := s.Query(body)
+	query, err := s.query(body)
 	if err != nil {
 		return nil, err
 	}
@@ -146,7 +147,7 @@ func (s *MusicProjectsClient) GetPublished() ([]parsedmodels.MusicProject, error
 		              }
 				}
 			}`)
-	query, err := s.Query(body)
+	query, err := s.query(body)
 	if err != nil {
 		return nil, err
 	}
@@ -187,4 +188,73 @@ func parseMusicProject(u *unparsedmodels.MusicProject, p *parsedmodels.MusicProj
 	p.ChoirRollup = choirRollup
 	p.Excerpt = excerpt
 	p.Poster = u.Properties.Poster.URL
+}
+
+type createProjectRequest struct {
+	Parent struct {
+		DatabaseId string `json:"database_id"`
+	} `json:"parent"`
+	*CreateProjectRequestProperties `json:"properties"`
+}
+
+type CreateProjectRequestProperties struct {
+	Title struct {
+		Title []*Title `json:"title"`
+	} `json:"title"`
+	Year struct {
+		Number int `json:"number"`
+	} `json:"Year"`
+	Choir struct {
+		Relation []*Relation `json:"relation"`
+	} `json:"Choir"`
+	Status struct {
+		Select struct {
+			Name string `json:"name"`
+		} `json:"select"`
+	} `json:"Status"`
+}
+
+type Title struct {
+	Text struct {
+		Content string `json:"content"`
+	} `json:"text"`
+}
+
+type Relation struct {
+	ID string `json:"id"`
+}
+
+func (s *MusicProjectsClient) CreateProject(title, choirId, status string, year int) (int, error) {
+	req := &createProjectRequest{}
+	req.Parent.DatabaseId = musicProjectDatabaseId
+
+	properties := &CreateProjectRequestProperties{}
+	properties.Year.Number = year
+
+	titleObj := &Title{}
+	titleObj.Text.Content = title
+	var titleList []*Title
+	titleList = append(titleList, titleObj)
+	properties.Title.Title = titleList
+
+	choirRelationObj := &Relation{}
+	choirRelationObj.ID = choirId
+	var choirRelationList []*Relation
+	choirRelationList = append(choirRelationList, choirRelationObj)
+	properties.Choir.Relation = choirRelationList
+
+	properties.Status.Select.Name = status
+
+	req.CreateProjectRequestProperties = properties
+
+	body, err := json.Marshal(&req)
+	if err != nil {
+		return 0, err
+	}
+
+	resp, err := s.apiClient.pages([]byte(body))
+	if err != nil {
+		return 0, err
+	}
+	return resp.StatusCode, nil
 }
