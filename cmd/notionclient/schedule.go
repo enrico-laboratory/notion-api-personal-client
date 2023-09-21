@@ -36,7 +36,7 @@ func (s *ScheduleClient) Query(body string) ([]parsedmodels.Task, error) {
 		var scheduleUnparsed unparsedmodels.Schedule
 
 		if count == 0 {
-			resp, err = s.apiClient.request(s.cfg.databases.scheduleID, []byte(body))
+			resp, err = s.apiClient.databaseQuery(s.cfg.databases.scheduleID, []byte(body))
 			if err != nil {
 				return nil, err
 			}
@@ -48,7 +48,7 @@ func (s *ScheduleClient) Query(body string) ([]parsedmodels.Task, error) {
 			} else {
 				newBody = fmt.Sprintf("%v%v,%v", body[:1], startCursor, body[1:])
 			}
-			resp, err = s.apiClient.request(s.cfg.databases.scheduleID, []byte(newBody))
+			resp, err = s.apiClient.databaseQuery(s.cfg.databases.scheduleID, []byte(newBody))
 			if err != nil {
 				return nil, err
 			}

@@ -37,7 +37,7 @@ func (s *RepertoireClient) Query(body string) ([]parsedmodels.Piece, error) {
 		var repertoireUnparsed unparsedmodels.Repertoire
 
 		if count == 0 {
-			resp, err = s.apiClient.request(s.cfg.databases.repertoireID, []byte(body))
+			resp, err = s.apiClient.databaseQuery(s.cfg.databases.repertoireID, []byte(body))
 			if err != nil {
 				return nil, err
 			}
@@ -49,7 +49,7 @@ func (s *RepertoireClient) Query(body string) ([]parsedmodels.Piece, error) {
 			} else {
 				newBody = fmt.Sprintf("%v%v,%v", body[:1], startCursor, body[1:])
 			}
-			resp, err = s.apiClient.request(s.cfg.databases.repertoireID, []byte(newBody))
+			resp, err = s.apiClient.databaseQuery(s.cfg.databases.repertoireID, []byte(newBody))
 			if err != nil {
 				return nil, err
 			}

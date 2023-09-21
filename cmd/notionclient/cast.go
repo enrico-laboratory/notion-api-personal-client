@@ -36,7 +36,7 @@ func (s *CastClient) Query(body string) ([]parsedmodels.Contact, error) {
 		var castUnparsed unparsedmodels.Cast
 
 		if count == 0 {
-			resp, err = s.apiClient.request(s.cfg.databases.castID, []byte(body))
+			resp, err = s.apiClient.databaseQuery(s.cfg.databases.castID, []byte(body))
 			if err != nil {
 				return nil, err
 			}
@@ -48,7 +48,7 @@ func (s *CastClient) Query(body string) ([]parsedmodels.Contact, error) {
 			} else {
 				newBody = fmt.Sprintf("%v%v,%v", body[:1], startCursor, body[1:])
 			}
-			resp, err = s.apiClient.request(s.cfg.databases.castID, []byte(newBody))
+			resp, err = s.apiClient.databaseQuery(s.cfg.databases.castID, []byte(newBody))
 			if err != nil {
 				return nil, err
 			}

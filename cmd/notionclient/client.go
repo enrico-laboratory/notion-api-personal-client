@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 )
 
@@ -16,6 +17,7 @@ type config struct {
 		scheduleID      string
 		castID          string
 		locationID      string
+		ChoirID         string
 	}
 	apiVersion    string
 	notionVersion string
@@ -29,6 +31,7 @@ type NotionApiClient struct {
 	Locations     LocationsService
 	Cast          CastService
 	Repertoire    RepertoireService
+	Choir         ChoirService
 }
 
 func NewClient(token string) (*NotionApiClient, error) {
@@ -43,6 +46,7 @@ func NewClient(token string) (*NotionApiClient, error) {
 	cfg.databases.scheduleID = taskDatabaseId
 	cfg.databases.castID = castDatabaseId
 	cfg.databases.locationID = locationDatabaseId
+	cfg.databases.ChoirID = choirDabaseId
 	cfg.apiVersion = apiVersion
 	cfg.notionVersion = notionVersion
 	cfg.token = token
@@ -56,21 +60,33 @@ func NewClient(token string) (*NotionApiClient, error) {
 	client.Locations = &LocationsClient{apiClient: client, cfg: cfg}
 	client.Cast = &CastClient{apiClient: client, cfg: cfg}
 	client.Repertoire = &RepertoireClient{apiClient: client, cfg: cfg}
+	client.Choir = &ChoirClient{apiClient: client, cfg: cfg}
 
 	return client, nil
 }
 
-func (c *NotionApiClient) request(databaseID string, body []byte) (*http.Response, error) {
+func (c *NotionApiClient) databaseQuery(databaseID string, body []byte) (*http.Response, error) {
+	u := fmt.Sprintf("databases/%v/query", databaseID)
+	return request(u, c.config.token, c.config.notionVersion, c.config.apiVersion, body)
+}
 
-	url := fmt.Sprintf("https://api.notion.com/%v/databases/%v/query", c.config.apiVersion, databaseID)
+func (c *NotionApiClient) pages(body []byte) (*http.Response, error) {
+	u := "pages"
+	return request(u, c.config.token, c.config.notionVersion, c.config.apiVersion, body)
+}
 
-	r, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(body))
+func request(path, bearer, notionVersion, apiVersion string, body []byte) (*http.Response, error) {
+	var u url.URL
+	u.Scheme = "https"
+	u.Host = "api.notion.com"
+	u.Path = fmt.Sprintf("%v/%v", apiVersion, path)
+	r, err := http.NewRequest(http.MethodPost, u.String(), bytes.NewBuffer(body))
 	if err != nil {
 		return nil, err
 	}
 
-	r.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.config.token))
-	r.Header.Add("Notion-Version", c.config.notionVersion)
+	r.Header.Add("Authorization", fmt.Sprintf("Bearer %s", bearer))
+	r.Header.Add("Notion-Version", notionVersion)
 	r.Header.Add("Content-Type", "application/json")
 	r.Header.Add("accept", "application/json")
 

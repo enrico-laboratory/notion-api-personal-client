@@ -33,7 +33,7 @@ func (s *LocationsClient) Query(body string) ([]parsedmodels.Location, error) {
 		var locationsUnparsed unparsedmodels.Locations
 
 		if count == 0 {
-			resp, err = s.apiClient.request(s.cfg.databases.locationID, []byte(body))
+			resp, err = s.apiClient.databaseQuery(s.cfg.databases.locationID, []byte(body))
 			if err != nil {
 				return nil, err
 			}
@@ -45,7 +45,7 @@ func (s *LocationsClient) Query(body string) ([]parsedmodels.Location, error) {
 			} else {
 				newBody = fmt.Sprintf("%v%v,%v", body[:1], startCursor, body[1:])
 			}
-			resp, err = s.apiClient.request(s.cfg.databases.locationID, []byte(newBody))
+			resp, err = s.apiClient.databaseQuery(s.cfg.databases.locationID, []byte(newBody))
 			if err != nil {
 				return nil, err
 			}
