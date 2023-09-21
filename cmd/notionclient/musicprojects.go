@@ -18,6 +18,7 @@ type MusicProjectsService interface {
 	GetWithStatusNot(status string) ([]parsedmodels.MusicProject, error)
 	GetPublished() ([]parsedmodels.MusicProject, error)
 	CreateProject(title, choirId, status string, year int) (int, error)
+	GetByTitle(title string) (*parsedmodels.MusicProject, error)
 }
 
 type MusicProjectsClient struct {
@@ -153,6 +154,29 @@ func (s *MusicProjectsClient) GetPublished() ([]parsedmodels.MusicProject, error
 	}
 
 	return query, nil
+}
+
+func (s *MusicProjectsClient) GetByTitle(title string) (*parsedmodels.MusicProject, error) {
+	body := fmt.Sprintf(`{ 
+				"filter": {
+		              "property": "Title",
+		              "title": {
+		                  "equals": "%v"
+		              }
+				}
+			}`, title)
+	query, err := s.query(body)
+	if err != nil {
+		return nil, err
+	}
+	if len(query) == 0 {
+		return nil, errors.New(fmt.Sprintf("choir with name %v does not exist", title))
+	}
+	if len(query) > 1 {
+		return nil, errors.New(fmt.Sprintf("found multiple choirs with name %v", title))
+	}
+
+	return &query[0], nil
 }
 
 func parseMusicProject(u *unparsedmodels.MusicProject, p *parsedmodels.MusicProject) {

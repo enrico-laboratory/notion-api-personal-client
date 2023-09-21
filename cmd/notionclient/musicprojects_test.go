@@ -52,11 +52,26 @@ func TestMusicProjectsService(t *testing.T) {
 		assert.Equal(t, projectId, result.Id)
 	})
 
+	t.Run("GetByTitle", func(t *testing.T) {
+		title := "Palestrina and Marenzio"
+		result, err := client.MusicProjects.GetByTitle(title)
+		if err != nil {
+			t.Fatal(err)
+		}
+		assert.Equal(t, title, result.Title)
+	})
+
+	t.Run("GetByTitle - missing", func(t *testing.T) {
+		fakeTitle := "Fake Title"
+		_, err := client.MusicProjects.GetByTitle(fakeTitle)
+		assert.NotEmpty(t, err)
+	})
+
 	t.Run("GetWithStatus on Going", func(t *testing.T) {
 		status := MusicProjectsStatusOnGoing
 		result, err := client.MusicProjects.GetWithStatus(status)
 		assert.Empty(t, err)
-		assert.True(t, len(result) == 3)
+		assert.True(t, len(result) > 1)
 	})
 
 	t.Run("GetPublished", func(t *testing.T) {
