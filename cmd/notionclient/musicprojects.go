@@ -17,7 +17,7 @@ type MusicProjectsService interface {
 	GetWithStatus(status string) ([]parsedmodels.MusicProject, error)
 	GetWithStatusNot(status string) ([]parsedmodels.MusicProject, error)
 	GetPublished() ([]parsedmodels.MusicProject, error)
-	CreateProject(title, choirId, status string, year int) (int, error)
+	CreateProject(title, choirId, status string, year int) (string, error)
 	GetByTitle(title string) (*parsedmodels.MusicProject, error)
 }
 
@@ -248,7 +248,8 @@ type Relation struct {
 	ID string `json:"id"`
 }
 
-func (s *MusicProjectsClient) CreateProject(title, choirId, status string, year int) (int, error) {
+// CreateProject creates a project and return the id of the created project
+func (s *MusicProjectsClient) CreateProject(title, choirId, status string, year int) (string, error) {
 	req := &createProjectRequest{}
 	req.Parent.DatabaseId = musicProjectDatabaseId
 
@@ -273,12 +274,18 @@ func (s *MusicProjectsClient) CreateProject(title, choirId, status string, year 
 
 	body, err := json.Marshal(&req)
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 
-	resp, err := s.apiClient.pages([]byte(body))
+	resp, err := s.apiClient.pages(body)
 	if err != nil {
-		return 0, err
+		return "", err
 	}
-	return resp.StatusCode, nil
+	var mpr unparsedmodels.MusicProjectCreateResponse
+	err = json.NewDecoder(resp.Body).Decode(&mpr)
+	if err != nil {
+		return "", err
+	}
+	projectId := mpr.ID
+	return projectId, nil
 }
