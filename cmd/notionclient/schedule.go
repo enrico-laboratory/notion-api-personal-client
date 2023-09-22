@@ -205,7 +205,7 @@ func parseTask(u *unparsedmodels.Task, p *parsedmodels.Task) {
 	emptyTaskDate := unparsedmodels.Date{}
 	emptyDate := ""
 
-	if u.Properties.DoDate.Date == emptyTaskDate {
+	if u.Properties.DoDate.Date == emptyTaskDate.Date {
 		startDateAndTime = emptyDate
 		endDateAndTime = emptyDate
 	} else if u.Properties.DoDate.Date.Start == emptyDate &&
@@ -228,7 +228,7 @@ func parseTask(u *unparsedmodels.Task, p *parsedmodels.Task) {
 	var kanban string
 	emptySelect := unparsedmodels.Select{}
 
-	if u.Properties.Kanban.Select == emptySelect {
+	if u.Properties.Kanban.Select == emptySelect.Select {
 		kanban = ""
 	} else {
 		kanban = u.Properties.Kanban.Select.Name
