@@ -16,6 +16,7 @@ const (
 	locationDatabaseId           = "264aecbf12ec4d439a306d3360a70001"
 	taskDatabaseId               = "b25b103631b34fc2a8804eec0b2b3813"
 	choirDabaseId                = "97be022740354a03b71a6e10da34fcb6"
+	musicDatabaseId              = "eccd5c44d17b4c97b28ae358f8801063"
 	resourceDatabase             = "databases"
 	resourcePage                 = "pages"
 )

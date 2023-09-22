@@ -18,6 +18,7 @@ type config struct {
 		castID          string
 		locationID      string
 		ChoirID         string
+		MusicID         string
 	}
 	apiVersion    string
 	notionVersion string
@@ -32,6 +33,7 @@ type NotionApiClient struct {
 	Cast          CastService
 	Repertoire    RepertoireService
 	Choir         ChoirService
+	Music         MusicService
 }
 
 func NewClient(token string) (*NotionApiClient, error) {
@@ -47,6 +49,7 @@ func NewClient(token string) (*NotionApiClient, error) {
 	cfg.databases.castID = castDatabaseId
 	cfg.databases.locationID = locationDatabaseId
 	cfg.databases.ChoirID = choirDabaseId
+	cfg.databases.MusicID = musicDatabaseId
 	cfg.apiVersion = apiVersion
 	cfg.notionVersion = notionVersion
 	cfg.token = token
@@ -61,6 +64,7 @@ func NewClient(token string) (*NotionApiClient, error) {
 	client.Cast = &CastClient{apiClient: client, cfg: cfg}
 	client.Repertoire = &RepertoireClient{apiClient: client, cfg: cfg}
 	client.Choir = &ChoirClient{apiClient: client, cfg: cfg}
+	client.Music = &MusicClient{apiClient: client, cfg: cfg}
 
 	return client, nil
 }
