@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestChoirClient(t *testing.T) {
+func TestChoirService(t *testing.T) {
 	client, err := NewClient(os.Getenv("NOTION_TOKEN"))
 	if err != nil {
 		t.Fatal(err)
