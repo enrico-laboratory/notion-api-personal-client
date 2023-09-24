@@ -69,22 +69,29 @@ func NewClient(token string) (*NotionApiClient, error) {
 	return client, nil
 }
 
+func (c *NotionApiClient) pagesDelete(pageId string) (*http.Response, error) {
+	u := fmt.Sprintf("pages/%v", pageId)
+	body := "{\"archived\": true}"
+	return request(u, c.config.token, c.config.notionVersion, c.config.apiVersion, http.MethodPatch, []byte(body))
+
+}
+
 func (c *NotionApiClient) databaseQuery(databaseID string, body []byte) (*http.Response, error) {
 	u := fmt.Sprintf("databases/%v/query", databaseID)
-	return request(u, c.config.token, c.config.notionVersion, c.config.apiVersion, body)
+	return request(u, c.config.token, c.config.notionVersion, c.config.apiVersion, http.MethodPost, body)
 }
 
 func (c *NotionApiClient) pages(body []byte) (*http.Response, error) {
 	u := "pages"
-	return request(u, c.config.token, c.config.notionVersion, c.config.apiVersion, body)
+	return request(u, c.config.token, c.config.notionVersion, c.config.apiVersion, http.MethodPost, body)
 }
 
-func request(path, bearer, notionVersion, apiVersion string, body []byte) (*http.Response, error) {
+func request(path, bearer, notionVersion, apiVersion, method string, body []byte) (*http.Response, error) {
 	var u url.URL
 	u.Scheme = "https"
 	u.Host = "api.notion.com"
 	u.Path = fmt.Sprintf("%v/%v", apiVersion, path)
-	r, err := http.NewRequest(http.MethodPost, u.String(), bytes.NewBuffer(body))
+	r, err := http.NewRequest(method, u.String(), bytes.NewBuffer(body))
 	if err != nil {
 		return nil, err
 	}
