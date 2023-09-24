@@ -13,71 +13,77 @@ type Parent struct {
 }
 
 type Relation struct {
-	ID       string `json:"id"`
-	Type     string `json:"type"`
-	Relation []struct {
-		ID string `json:"id"`
-	} `json:"relation"`
+	ID       string             `json:"id,omitempty"`
+	Type     string             `json:"type,omitempty"`
+	Relation []RelationProperty `json:"relation,omitempty"`
+}
+
+type RelationProperty struct {
+	ID string `json:"id,omitempty"`
 }
 
 type RichText struct {
-	ID       string `json:"id"`
-	Type     string `json:"type"`
-	RichText []struct {
-		Type string `json:"type"`
-		Text struct {
-			Content string      `json:"content"`
-			Link    interface{} `json:"link"`
-		} `json:"text"`
-		Annotations struct {
-			Bold          bool   `json:"bold"`
-			Italic        bool   `json:"italic"`
-			Strikethrough bool   `json:"strikethrough"`
-			Underline     bool   `json:"underline"`
-			Code          bool   `json:"code"`
-			Color         string `json:"color"`
-		} `json:"annotations"`
-		PlainText string      `json:"plain_text"`
-		Href      interface{} `json:"href"`
-	} `json:"rich_text"`
+	ID       string             `json:"id,omitempty"`
+	Type     string             `json:"type,omitempty"`
+	RichText []RichTextProperty `json:"rich_text,omitempty"`
+}
+
+type RichTextProperty struct {
+	Type string `json:"type,omitempty"`
+	Text struct {
+		Content string      `json:"content,omitempty"`
+		Link    interface{} `json:"link,omitempty"`
+	} `json:"text,omitempty"`
+	Annotations struct {
+		Bold          bool   `json:"bold,omitempty"`
+		Italic        bool   `json:"italic,omitempty"`
+		Strikethrough bool   `json:"strikethrough,omitempty"`
+		Underline     bool   `json:"underline,omitempty"`
+		Code          bool   `json:"code,omitempty"`
+		Color         string `json:"color,omitempty"`
+	} `json:"annotations,omitempty"`
+	PlainText string      `json:"plain_text,omitempty"`
+	Href      interface{} `json:"href,omitempty"`
 }
 
 type Select struct {
-	ID     string `json:"id"`
-	Type   string `json:"type"`
+	ID     string `json:"id,omitempty"`
+	Type   string `json:"type,omitempty"`
 	Select struct {
-		ID    string `json:"id"`
-		Name  string `json:"name"`
-		Color string `json:"color"`
-	} `json:"select"`
+		ID    string `json:"id,omitempty"`
+		Name  string `json:"name,omitempty"`
+		Color string `json:"color,omitempty"`
+	} `json:"select,omitempty"`
 }
 
 type NumberFloat struct {
-	ID     string  `json:"id"`
-	Type   string  `json:"type"`
-	Number float64 `json:"number"`
+	ID     string  `json:"id,omitempty"`
+	Type   string  `json:"type,omitempty"`
+	Number float64 `json:"number,omitempty"`
 }
 
 type Title struct {
-	ID    string `json:"id"`
-	Type  string `json:"type"`
-	Title []struct {
-		Type string `json:"type"`
-		Text struct {
-			Content string      `json:"content"`
-			Link    interface{} `json:"link"`
-		} `json:"text"`
-		Annotations struct {
-			Bold          bool   `json:"bold"`
-			Italic        bool   `json:"italic"`
-			Strikethrough bool   `json:"strikethrough"`
-			Underline     bool   `json:"underline"`
-			Code          bool   `json:"code"`
-			Color         string `json:"color"`
-		} `json:"annotations"`
-		PlainText string      `json:"plain_text"`
-		Href      interface{} `json:"href"`
-	} `json:"title"`
+	ID    string          `json:"id,omitempty"`
+	Type  string          `json:"type,omitempty"`
+	Title []TitleProperty `json:"title,omitempty"`
+}
+
+type TitleProperty struct {
+	Type string `json:"type,omitempty"`
+	Text struct {
+		Content string      `json:"content,omitempty"`
+		Link    interface{} `json:"link,omitempty"`
+	} `json:"text,omitempty"`
+	Annotations struct {
+		Bold          bool   `json:"bold,omitempty"`
+		Italic        bool   `json:"italic,omitempty"`
+		Strikethrough bool   `json:"strikethrough,omitempty"`
+		Underline     bool   `json:"underline,omitempty"`
+		Code          bool   `json:"code,omitempty"`
+		Color         string `json:"color,omitempty"`
+	} `json:"annotations,omitempty"`
+	PlainText string      `json:"plain_text,omitempty"`
+	Href      interface{} `json:"href,omitempty"`
 }
 
 type Email struct {
@@ -97,18 +103,20 @@ type Checkbox struct {
 }
 
 type MultiSelect struct {
-	ID          string `json:"id"`
-	Type        string `json:"type"`
-	MultiSelect []struct {
-		ID    string `json:"id"`
-		Name  string `json:"name"`
-		Color string `json:"color"`
-	} `json:"multi_select"`
+	ID          string                `json:"id,omitempty"`
+	Type        string                `json:"type,omitempty"`
+	MultiSelect []MultiSelectProperty `json:"multi_select,omitempty"`
+}
+
+type MultiSelectProperty struct {
+	ID    string `json:"id,omitempty"`
+	Name  string `json:"name,omitempty"`
+	Color string `json:"color,omitempty"`
 }
 type Url struct {
-	ID   string `json:"id"`
-	Type string `json:"type"`
-	URL  string `json:"url"`
+	ID   string `json:"id,omitempty"`
+	Type string `json:"type,omitempty"`
+	URL  string `json:"url,omitempty"`
 }
 
 type CreatedTime struct {
