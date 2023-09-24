@@ -15,6 +15,8 @@ type RepertoireService interface {
 	GetAll() ([]parsedmodels.Piece, error)
 	GetByProjectId(projectId string) ([]parsedmodels.Piece, error)
 	GetByProjectIdAndSelected(projectId string) ([]parsedmodels.Piece, error)
+	Create(properties *CreatePieceRequestProperties) (string, error)
+	DeleteById(pieceId string) error
 }
 
 type RepertoireClient struct {
@@ -130,6 +132,66 @@ func (s *RepertoireClient) GetByProjectIdAndSelected(projectId string) ([]parsed
 	}
 
 	return result, nil
+}
+
+type CreatePieceRequestProperties struct {
+	Order     string
+	MusicID   string
+	ProjectID string
+}
+
+func (s *RepertoireClient) Create(properties *CreatePieceRequestProperties) (string, error) {
+	type createPieceRequest struct {
+		Parent struct {
+			DatabaseId string `json:"database_id"`
+		} `json:"parent"`
+		Properties struct {
+			Order        unparsedmodels.Title    `json:"Order"`
+			Music        unparsedmodels.Relation `json:"Music"`
+			MusicProject unparsedmodels.Relation `json:"Music Project"`
+		} `json:"properties"`
+	}
+
+	req := &createPieceRequest{}
+	req.Parent.DatabaseId = repertoireDatabaseId
+
+	var orderProperty unparsedmodels.TitleProperty
+	orderProperty.Text.Content = properties.Order
+	req.Properties.Order.Title = []unparsedmodels.TitleProperty{orderProperty}
+
+	var musicProperty unparsedmodels.RelationProperty
+	musicProperty.ID = properties.MusicID
+	req.Properties.Music.Relation = []unparsedmodels.RelationProperty{musicProperty}
+
+	var musicProjectProperty unparsedmodels.RelationProperty
+	musicProjectProperty.ID = properties.ProjectID
+	req.Properties.MusicProject.Relation = []unparsedmodels.RelationProperty{musicProjectProperty}
+
+	body, err := json.Marshal(&req)
+	if err != nil {
+		return "", err
+	}
+
+	resp, err := s.apiClient.pages(body)
+	if err != nil {
+		return "", err
+	}
+
+	var mr unparsedmodels.MusicProjectCreateResponse
+	err = json.NewDecoder(resp.Body).Decode(&mr)
+	if err != nil {
+		return "", err
+	}
+	projectId := mr.ID
+	return projectId, nil
+}
+
+func (s *RepertoireClient) DeleteById(pieceId string) error {
+	_, err := s.apiClient.pagesDelete(pieceId)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func parsePiece(u *unparsedmodels.Piece, p *parsedmodels.Piece) {
