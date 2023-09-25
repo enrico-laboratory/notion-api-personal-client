@@ -25,10 +25,10 @@ func TestMusicService(t *testing.T) {
 
 	t.Run("Create", func(t *testing.T) {
 		properties := &CreateMusicRequestProperties{
-			Voices:      "SATB",
-			Score:       "www.example.com",
-			Media:       "sdf",
-			Recording:   "sdf",
+			Voices: "SATB",
+			Score:  "www.example.com",
+			//Media:       "",
+			//Recording:   "sdf",
 			Composer:    "Test Composer",
 			Length:      2.5,
 			Instruments: []string{"vln", "clav"},

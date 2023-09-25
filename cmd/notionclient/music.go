@@ -110,11 +110,11 @@ func (m *MusicClient) DeleteMusicById(musicId string) error {
 }
 
 type CreateMusicRequestProperties struct {
-	Title       string
-	Voices      string
-	Score       string
-	Media       string
-	Recording   string
+	Title  string
+	Voices string
+	Score  string
+	//Media       string
+	//Recording   string
 	Composer    string
 	Length      float64
 	Instruments []string
@@ -127,10 +127,10 @@ func (m *MusicClient) CreateMusic(properties *CreateMusicRequestProperties) (str
 			DatabaseId string `json:"database_id"`
 		} `json:"parent"`
 		Properties struct {
-			Voices      unparsedmodels.Select      `json:"Voices,omitempty"`
-			Score       unparsedmodels.Url         `json:"Score,omitempty"`
-			Media       unparsedmodels.Url         `json:"Media,omitempty"`
-			Recording   unparsedmodels.Url         `json:"Recording,omitempty"`
+			Voices unparsedmodels.Select `json:"Voices,omitempty"`
+			Score  unparsedmodels.Url    `json:"Score,omitempty"`
+			//Media       unparsedmodels.Url         `json:"Media,omitempty"`
+			//Recording   unparsedmodels.Url         `json:"Recording,omitempty"`
 			Composer    unparsedmodels.RichText    `json:"Composer"`
 			Length      unparsedmodels.NumberFloat `json:"Length,omitempty"`
 			Instruments unparsedmodels.MultiSelect `json:"Instruments,omitempty"`
@@ -146,24 +146,38 @@ func (m *MusicClient) CreateMusic(properties *CreateMusicRequestProperties) (str
 	titleProperty.Text.Content = properties.Title
 	req.Properties.Title.Title = []unparsedmodels.TitleProperty{titleProperty}
 
-	req.Properties.Voices.Select.Name = properties.Voices
-	req.Properties.Score.URL = properties.Score
-	req.Properties.Media.URL = properties.Media
-	req.Properties.Recording.URL = properties.Recording
-	req.Properties.Solo.Select.Name = properties.Solo
+	if properties.Voices != "" {
+		req.Properties.Voices.Select.Name = properties.Voices
+	}
+	if properties.Score != "" {
+		req.Properties.Score.URL = properties.Score
+	}
+	//if properties.Media != "" {
+	//	req.Properties.Media.URL = properties.Media
+	//}
+	//if properties.Recording != "" {
+	//	req.Properties.Recording.URL = properties.Recording
+	//}
+	if properties.Solo != "" {
+		req.Properties.Solo.Select.Name = properties.Solo
+	}
 
 	richTextProperty := unparsedmodels.RichTextProperty{}
 	richTextProperty.Text.Content = properties.Composer
 	req.Properties.Composer.RichText = []unparsedmodels.RichTextProperty{richTextProperty}
 
-	req.Properties.Length.Number = properties.Length
-
-	var multiSelectPropertyList []unparsedmodels.MultiSelectProperty
-	for _, i := range properties.Instruments {
-		multiSelectProperty := unparsedmodels.MultiSelectProperty{Name: i}
-		multiSelectPropertyList = append(multiSelectPropertyList, multiSelectProperty)
+	if properties.Length != 0 {
+		req.Properties.Length.Number = properties.Length
 	}
-	req.Properties.Instruments.MultiSelect = multiSelectPropertyList
+
+	if len(properties.Instruments) > 0 {
+		var multiSelectPropertyList []unparsedmodels.MultiSelectProperty
+		for _, i := range properties.Instruments {
+			multiSelectProperty := unparsedmodels.MultiSelectProperty{Name: i}
+			multiSelectPropertyList = append(multiSelectPropertyList, multiSelectProperty)
+		}
+		req.Properties.Instruments.MultiSelect = multiSelectPropertyList
+	}
 
 	body, err := json.Marshal(&req)
 	if err != nil {
