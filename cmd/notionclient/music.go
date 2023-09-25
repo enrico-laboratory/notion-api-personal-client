@@ -127,14 +127,14 @@ func (m *MusicClient) CreateMusic(properties *CreateMusicRequestProperties) (str
 			DatabaseId string `json:"database_id"`
 		} `json:"parent"`
 		Properties struct {
-			Voices      unparsedmodels.Select      `json:"Voices"`
-			Score       unparsedmodels.Url         `json:"Score"`
-			Media       unparsedmodels.Url         `json:"Media"`
-			Recording   unparsedmodels.Url         `json:"Recording"`
+			Voices      unparsedmodels.Select      `json:"Voices,omitempty"`
+			Score       unparsedmodels.Url         `json:"Score,omitempty"`
+			Media       unparsedmodels.Url         `json:"Media,omitempty"`
+			Recording   unparsedmodels.Url         `json:"Recording,omitempty"`
 			Composer    unparsedmodels.RichText    `json:"Composer"`
-			Length      unparsedmodels.NumberFloat `json:"Length"`
-			Instruments unparsedmodels.MultiSelect `json:"Instruments"`
-			Solo        unparsedmodels.Select      `json:"Solo"`
+			Length      unparsedmodels.NumberFloat `json:"Length,omitempty"`
+			Instruments unparsedmodels.MultiSelect `json:"Instruments,omitempty"`
+			Solo        unparsedmodels.Select      `json:"Solo,omitempty"`
 			Title       unparsedmodels.Title       `json:"Music"`
 		} `json:"properties"`
 	}
