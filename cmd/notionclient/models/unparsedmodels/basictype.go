@@ -94,14 +94,14 @@ type Email struct {
 }
 
 type PhoneNumber struct {
-	Type        string `json:"type"`
-	PhoneNumber string `json:"phone_number"`
+	Type        string `json:"type,omitempty"`
+	PhoneNumber string `json:"phone_number,omitempty"`
 }
 
 type Checkbox struct {
-	ID       string `json:"id"`
-	Type     string `json:"type"`
-	Checkbox bool   `json:"checkbox"`
+	ID       string `json:"id,omitempty"`
+	Type     string `json:"type,omitempty"`
+	Checkbox bool   `json:"checkbox,omitempty"`
 }
 
 type MultiSelect struct {

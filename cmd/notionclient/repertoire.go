@@ -6,6 +6,7 @@ import (
 	"github.com/enrico-laboratory/notion-api-personal-client/cmd/notionclient/models/parsedmodels"
 	"github.com/enrico-laboratory/notion-api-personal-client/cmd/notionclient/models/unparsedmodels"
 	"io"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -177,6 +178,7 @@ func (s *RepertoireClient) Create(properties *CreatePieceRequestProperties) (str
 	if err != nil {
 		return "", err
 	}
+	log.Println(string(body))
 
 	resp, err := s.apiClient.pages(body)
 	if err != nil {
