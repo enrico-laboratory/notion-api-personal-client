@@ -54,6 +54,16 @@ func TestRepertoireService(t *testing.T) {
 		assert.True(t, len(result) > 5)
 	})
 
+	t.Run("GetByProjectIdAndOrder", func(t *testing.T) {
+		projectId := "a890db2a-12a5-4606-886d-fb35283250c6"
+		order := "01"
+		result, err := client.Repertoire.GetByProjectIdAndOrder(projectId, order)
+		if err != nil {
+			t.Fatal(err)
+		}
+		assert.Equal(t, order, result.Order)
+	})
+
 	var pieceId string
 	t.Run("Create", func(t *testing.T) {
 		newPiece := &CreatePieceRequestProperties{

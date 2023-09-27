@@ -2,11 +2,11 @@ package notionclient
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/enrico-laboratory/notion-api-personal-client/cmd/notionclient/models/parsedmodels"
 	"github.com/enrico-laboratory/notion-api-personal-client/cmd/notionclient/models/unparsedmodels"
 	"io"
-	"log"
 	"net/http"
 	"strings"
 )
@@ -16,6 +16,7 @@ type RepertoireService interface {
 	GetAll() ([]parsedmodels.Piece, error)
 	GetByProjectId(projectId string) ([]parsedmodels.Piece, error)
 	GetByProjectIdAndSelected(projectId string) ([]parsedmodels.Piece, error)
+	GetByProjectIdAndOrder(projectId, order string) (*parsedmodels.Piece, error)
 	Create(properties *CreatePieceRequestProperties) (string, error)
 	DeleteById(pieceId string) error
 }
@@ -135,6 +136,42 @@ func (s *RepertoireClient) GetByProjectIdAndSelected(projectId string) ([]parsed
 	return result, nil
 }
 
+func (s *RepertoireClient) GetByProjectIdAndOrder(projectId, order string) (*parsedmodels.Piece, error) {
+
+	body := fmt.Sprintf(`{
+    "filter": {
+        "property": "Order",
+        "title": {
+            "equals": "%v"
+        	}
+    	}
+	}`, order)
+	query, err := s.Query(body)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []*parsedmodels.Piece
+
+	for _, piece := range query {
+		for _, projectIdRepertoire := range piece.MusicProject {
+			if projectIdRepertoire == projectId {
+				result = append(result, &piece)
+			}
+		}
+	}
+
+	if len(result) > 1 {
+		return nil, errors.New(fmt.Sprintf("there are multiple pieces with order \"%v\" and project id \"%v\"", order, projectId))
+	}
+
+	if len(result) == 0 {
+		return nil, errors.New(fmt.Sprintf("no pieces with order \"%v\" and project id \"%v\" found", order, projectId))
+	}
+
+	return result[0], nil
+}
+
 type CreatePieceRequestProperties struct {
 	Order     string
 	Selected  bool
@@ -178,7 +215,6 @@ func (s *RepertoireClient) Create(properties *CreatePieceRequestProperties) (str
 	if err != nil {
 		return "", err
 	}
-	log.Println(string(body))
 
 	resp, err := s.apiClient.pages(body)
 	if err != nil {
