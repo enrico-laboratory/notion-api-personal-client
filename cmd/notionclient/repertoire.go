@@ -136,6 +136,7 @@ func (s *RepertoireClient) GetByProjectIdAndSelected(projectId string) ([]parsed
 
 type CreatePieceRequestProperties struct {
 	Order     string
+	Selected  bool
 	MusicID   string
 	ProjectID string
 }
@@ -149,6 +150,7 @@ func (s *RepertoireClient) Create(properties *CreatePieceRequestProperties) (str
 			Order        unparsedmodels.Title    `json:"Order"`
 			Music        unparsedmodels.Relation `json:"Music"`
 			MusicProject unparsedmodels.Relation `json:"Music Project"`
+			Selected     unparsedmodels.Checkbox `json:"Selected"`
 		} `json:"properties"`
 	}
 
@@ -166,6 +168,10 @@ func (s *RepertoireClient) Create(properties *CreatePieceRequestProperties) (str
 	var musicProjectProperty unparsedmodels.RelationProperty
 	musicProjectProperty.ID = properties.ProjectID
 	req.Properties.MusicProject.Relation = []unparsedmodels.RelationProperty{musicProjectProperty}
+
+	var selected unparsedmodels.Checkbox
+	selected.Checkbox = properties.Selected
+	req.Properties.Selected = selected
 
 	body, err := json.Marshal(&req)
 	if err != nil {
