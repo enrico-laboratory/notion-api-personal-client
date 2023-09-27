@@ -177,13 +177,17 @@ func (s *RepertoireClient) Create(properties *CreatePieceRequestProperties) (str
 		return "", err
 	}
 
-	var mr unparsedmodels.MusicProjectCreateResponse
-	err = json.NewDecoder(resp.Body).Decode(&mr)
+	type ResponseID struct {
+		ID string `json:"id"`
+	}
+
+	var id ResponseID
+	err = json.NewDecoder(resp.Body).Decode(&id)
 	if err != nil {
 		return "", err
 	}
-	projectId := mr.ID
-	return projectId, nil
+	repId := id.ID
+	return repId, nil
 }
 
 func (s *RepertoireClient) DeleteById(pieceId string) error {

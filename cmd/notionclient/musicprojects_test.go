@@ -81,7 +81,7 @@ func TestMusicProjectsService(t *testing.T) {
 		assert.True(t, len(result) > 2)
 	})
 
-	t.Run("Create test database", func(t *testing.T) {
+	t.Run("Create test project", func(t *testing.T) {
 		title := "test"
 		choirId := "f7883d7baee1467a88463cc6fdac2ee9"
 		status := "On Going"

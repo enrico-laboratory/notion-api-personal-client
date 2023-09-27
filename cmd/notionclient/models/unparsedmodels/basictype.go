@@ -47,13 +47,15 @@ type RichTextProperty struct {
 }
 
 type Select struct {
-	ID     string `json:"id,omitempty"`
-	Type   string `json:"type,omitempty"`
-	Select struct {
-		ID    string `json:"id,omitempty"`
-		Name  string `json:"name,omitempty"`
-		Color string `json:"color,omitempty"`
-	} `json:"select,omitempty"`
+	ID     string         `json:"id,omitempty"`
+	Type   string         `json:"type,omitempty"`
+	Select SelectProperty `json:"select,omitempty"`
+}
+
+type SelectProperty struct {
+	ID    string `json:"id,omitempty"`
+	Name  string `json:"name,omitempty"`
+	Color string `json:"color,omitempty"`
 }
 
 type NumberFloat struct {

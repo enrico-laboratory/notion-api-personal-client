@@ -110,11 +110,11 @@ func (m *MusicClient) DeleteMusicById(musicId string) error {
 }
 
 type CreateMusicRequestProperties struct {
-	Title  string
-	Voices string
-	Score  string
-	//Media       string
-	//Recording   string
+	Title       string
+	Voices      string
+	Score       string
+	Media       string
+	Recording   string
 	Composer    string
 	Length      float64
 	Instruments []string
@@ -122,20 +122,24 @@ type CreateMusicRequestProperties struct {
 }
 
 func (m *MusicClient) CreateMusic(properties *CreateMusicRequestProperties) (string, error) {
+	if properties.Title == "" || properties.Composer == "" || properties.Voices == "" {
+		return "", errors.New("one of Tile, Composer or Voices is missing")
+	}
 	type createMusicRequest struct {
 		Parent struct {
 			DatabaseId string `json:"database_id"`
 		} `json:"parent"`
+		//Properties map[string]any `json:"properties"`
 		Properties struct {
-			Voices unparsedmodels.Select `json:"Voices,omitempty"`
-			Score  unparsedmodels.Url    `json:"Score,omitempty"`
-			//Media       unparsedmodels.Url         `json:"Media,omitempty"`
-			//Recording   unparsedmodels.Url         `json:"Recording,omitempty"`
-			Composer    unparsedmodels.RichText    `json:"Composer"`
-			Length      unparsedmodels.NumberFloat `json:"Length,omitempty"`
-			Instruments unparsedmodels.MultiSelect `json:"Instruments,omitempty"`
-			Solo        unparsedmodels.Select      `json:"Solo,omitempty"`
-			Title       unparsedmodels.Title       `json:"Music"`
+			Voices      map[string]unparsedmodels.SelectProperty        `json:"Voices,omitempty"`
+			Score       map[string]string                               `json:"Score,omitempty"`
+			Media       map[string]string                               `json:"Media,omitempty"`
+			Recording   map[string]string                               `json:"Recording,omitempty"`
+			Composer    unparsedmodels.RichText                         `json:"Composer"`
+			Length      map[string]float64                              `json:"Length,omitempty"`
+			Instruments map[string][]unparsedmodels.MultiSelectProperty `json:"Instruments,omitempty"`
+			Solo        map[string]unparsedmodels.SelectProperty        `json:"Solo,omitempty"`
+			Title       unparsedmodels.Title                            `json:"Music"`
 		} `json:"properties"`
 	}
 
@@ -144,22 +148,38 @@ func (m *MusicClient) CreateMusic(properties *CreateMusicRequestProperties) (str
 
 	var titleProperty unparsedmodels.TitleProperty
 	titleProperty.Text.Content = properties.Title
+
 	req.Properties.Title.Title = []unparsedmodels.TitleProperty{titleProperty}
 
 	if properties.Voices != "" {
-		req.Properties.Voices.Select.Name = properties.Voices
+		voices := make(map[string]unparsedmodels.SelectProperty)
+		voicesProperties := unparsedmodels.SelectProperty{}
+		voicesProperties.Name = properties.Voices
+		voices["select"] = voicesProperties
+		req.Properties.Voices = voices
 	}
+
 	if properties.Score != "" {
-		req.Properties.Score.URL = properties.Score
+		score := make(map[string]string)
+		score["url"] = properties.Score
+		req.Properties.Score = score
 	}
-	//if properties.Media != "" {
-	//	req.Properties.Media.URL = properties.Media
-	//}
-	//if properties.Recording != "" {
-	//	req.Properties.Recording.URL = properties.Recording
-	//}
+	if properties.Media != "" {
+		media := make(map[string]string)
+		media["url"] = properties.Media
+		req.Properties.Media = media
+	}
+	if properties.Recording != "" {
+		recording := make(map[string]string)
+		recording["url"] = properties.Recording
+		req.Properties.Recording = recording
+	}
 	if properties.Solo != "" {
-		req.Properties.Solo.Select.Name = properties.Solo
+		solo := make(map[string]unparsedmodels.SelectProperty)
+		soloProperties := unparsedmodels.SelectProperty{}
+		soloProperties.Name = properties.Solo
+		solo["select"] = soloProperties
+		req.Properties.Solo = solo
 	}
 
 	richTextProperty := unparsedmodels.RichTextProperty{}
@@ -167,7 +187,9 @@ func (m *MusicClient) CreateMusic(properties *CreateMusicRequestProperties) (str
 	req.Properties.Composer.RichText = []unparsedmodels.RichTextProperty{richTextProperty}
 
 	if properties.Length != 0 {
-		req.Properties.Length.Number = properties.Length
+		length := make(map[string]float64)
+		length["number"] = properties.Length
+		req.Properties.Length = length
 	}
 
 	if len(properties.Instruments) > 0 {
@@ -176,7 +198,9 @@ func (m *MusicClient) CreateMusic(properties *CreateMusicRequestProperties) (str
 			multiSelectProperty := unparsedmodels.MultiSelectProperty{Name: i}
 			multiSelectPropertyList = append(multiSelectPropertyList, multiSelectProperty)
 		}
-		req.Properties.Instruments.MultiSelect = multiSelectPropertyList
+		instruments := make(map[string][]unparsedmodels.MultiSelectProperty)
+		instruments["multi_select"] = multiSelectPropertyList
+		req.Properties.Instruments = instruments
 	}
 
 	body, err := json.Marshal(&req)
@@ -189,13 +213,17 @@ func (m *MusicClient) CreateMusic(properties *CreateMusicRequestProperties) (str
 		return "", err
 	}
 
-	var mr unparsedmodels.MusicProjectCreateResponse
-	err = json.NewDecoder(resp.Body).Decode(&mr)
+	type ResponseID struct {
+		ID string `json:"id"`
+	}
+
+	var id ResponseID
+	err = json.NewDecoder(resp.Body).Decode(&id)
 	if err != nil {
 		return "", err
 	}
-	projectId := mr.ID
-	return projectId, nil
+	musicId := id.ID
+	return musicId, nil
 }
 
 func parseMusic(u *unparsedmodels.SingleMusic, p *parsedmodels.Music) {
