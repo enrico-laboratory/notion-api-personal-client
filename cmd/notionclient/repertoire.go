@@ -139,37 +139,47 @@ func (s *RepertoireClient) GetByProjectIdAndSelected(projectId string) ([]parsed
 func (s *RepertoireClient) GetByProjectIdAndOrder(projectId, order string) (*parsedmodels.Piece, error) {
 
 	body := fmt.Sprintf(`{
-    "filter": {
+  "filter": {
+    "and": [
+      {
         "property": "Order",
         "title": {
-            "equals": "%v"
-        	}
-    	}
-	}`, order)
+          "equals": "%v"
+        }
+      },
+      {
+        "property": "Music Project",
+        "relation": {
+          "contains": "%v"
+        }
+      }
+    ]
+  }
+}`, order, projectId)
 	query, err := s.Query(body)
 	if err != nil {
 		return nil, err
 	}
 
-	var result []*parsedmodels.Piece
+	//var result []*parsedmodels.Piece
 
-	for _, piece := range query {
-		for _, projectIdRepertoire := range piece.MusicProject {
-			if projectIdRepertoire == projectId {
-				result = append(result, &piece)
-			}
-		}
-	}
+	//for _, piece := range query {
+	//	for _, projectIdRepertoire := range piece.MusicProject {
+	//		if projectIdRepertoire == projectId {
+	//			result = append(result, &piece)
+	//		}
+	//	}
+	//}
 
-	if len(result) > 1 {
+	if len(query) > 1 {
 		return nil, errors.New(fmt.Sprintf("there are multiple pieces with order \"%v\" and project id \"%v\"", order, projectId))
 	}
 
-	if len(result) == 0 {
+	if len(query) == 0 {
 		return nil, errors.New(fmt.Sprintf("no pieces with order \"%v\" and project id \"%v\" found", order, projectId))
 	}
 
-	return result[0], nil
+	return &query[0], nil
 }
 
 type CreatePieceRequestProperties struct {
