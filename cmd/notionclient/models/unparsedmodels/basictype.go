@@ -101,7 +101,7 @@ type PhoneNumber struct {
 type Checkbox struct {
 	ID       string `json:"id,omitempty"`
 	Type     string `json:"type,omitempty"`
-	Checkbox bool   `json:"checkbox,omitempty"`
+	Checkbox bool   `json:"checkbox"`
 }
 
 type MultiSelect struct {

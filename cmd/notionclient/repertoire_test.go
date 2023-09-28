@@ -68,8 +68,9 @@ func TestRepertoireService(t *testing.T) {
 	t.Run("Create", func(t *testing.T) {
 		newPiece := &CreatePieceRequestProperties{
 			Order:     "100",
-			MusicID:   "6885b92c3331472da846fa14d7543fa5",
-			ProjectID: "830e429de257411b9bd87bf3635459a2",
+			MusicID:   "a7465994352646c5ac8f6f8d3f9f6d4d", // dissi a l'amata
+			ProjectID: "0ef6f9ca84a7481f8b3009ae64c579c6", // The passing of the years
+			Selected:  false,
 		}
 
 		result, err := client.Repertoire.Create(newPiece)

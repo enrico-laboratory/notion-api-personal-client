@@ -207,7 +207,7 @@ func (s *RepertoireClient) Create(properties *CreatePieceRequestProperties) (str
 	musicProjectProperty.ID = properties.ProjectID
 	req.Properties.MusicProject.Relation = []unparsedmodels.RelationProperty{musicProjectProperty}
 
-	var selected unparsedmodels.Checkbox
+	selected := unparsedmodels.Checkbox{}
 	selected.Checkbox = properties.Selected
 	req.Properties.Selected = selected
 
