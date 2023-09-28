@@ -128,10 +128,10 @@ func (m *MusicClient) GetByTileAndComposer(title, composer string) (*parsedmodel
 		return nil, err
 	}
 	if len(query) == 0 {
-		return nil, errors.New(fmt.Sprintf("music with name %v does not exist", title))
+		return nil, errors.New(fmt.Sprintf("music with name '%v' and composer '%v' does not exist", title, composer))
 	}
 	if len(query) > 1 {
-		return nil, errors.New(fmt.Sprintf("found multiple music with name %v", title))
+		return nil, errors.New(fmt.Sprintf("found multiple music with name '%v' and composer '%v'", title, composer))
 	}
 
 	return &query[0], nil
@@ -158,8 +158,8 @@ type CreateMusicRequestProperties struct {
 }
 
 func (m *MusicClient) CreateMusic(properties *CreateMusicRequestProperties) (string, error) {
-	if properties.Title == "" || properties.Composer == "" || properties.Voices == "" {
-		return "", errors.New("one of Tile, Composer or Voices is missing")
+	if properties.Title == "" || properties.Composer == "" {
+		return "", errors.New("one of Tile or Composer is missing")
 	}
 	type createMusicRequest struct {
 		Parent struct {
