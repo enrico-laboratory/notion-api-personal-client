@@ -21,6 +21,16 @@ func TestMusicService(t *testing.T) {
 		assert.Equal(t, title, result.Title)
 	})
 
+	t.Run("get by title and composer", func(t *testing.T) {
+		title := "Salve Regina"
+		composer := "Gregoriano"
+		result, err := client.Music.GetByTileAndComposer(title, composer)
+		if err != nil {
+			t.Fatal(err)
+		}
+		assert.Equal(t, title, result.Title)
+	})
+
 	var musicId string
 
 	t.Run("Create", func(t *testing.T) {

@@ -13,6 +13,7 @@ import (
 type MusicService interface {
 	query(body string) ([]parsedmodels.Music, error)
 	GetByTile(title string) (*parsedmodels.Music, error)
+	GetByTileAndComposer(title, composer string) (*parsedmodels.Music, error)
 	CreateMusic(properties *CreateMusicRequestProperties) (string, error)
 	DeleteMusicById(musicId string) error
 }
@@ -98,7 +99,42 @@ func (m *MusicClient) GetByTile(title string) (*parsedmodels.Music, error) {
 	}
 
 	return &query[0], nil
+}
 
+func (m *MusicClient) GetByTileAndComposer(title, composer string) (*parsedmodels.Music, error) {
+	if title == "" || composer == "" {
+		return nil, errors.New("tile and composer must be specified")
+	}
+	body := fmt.Sprintf(`{
+"filter": {
+  "and": [
+    {
+      "property": "Music",
+      "title": {
+        "equals": "%v"
+      }
+    },
+    {
+      "property": "Composer",
+      "title": {
+        "equals": "%v"
+      }
+    }
+  ]
+}
+}`, title, composer)
+	query, err := m.query(body)
+	if err != nil {
+		return nil, err
+	}
+	if len(query) == 0 {
+		return nil, errors.New(fmt.Sprintf("music with name %v does not exist", title))
+	}
+	if len(query) > 1 {
+		return nil, errors.New(fmt.Sprintf("found multiple music with name %v", title))
+	}
+
+	return &query[0], nil
 }
 
 func (m *MusicClient) DeleteMusicById(musicId string) error {
