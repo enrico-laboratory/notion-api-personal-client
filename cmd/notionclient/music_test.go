@@ -22,8 +22,8 @@ func TestMusicService(t *testing.T) {
 	})
 
 	t.Run("get by title and composer", func(t *testing.T) {
-		title := "Salve Regina"
-		composer := "Gregoriano"
+		title := "Missa de Beata Virgine - Kyrie"
+		composer := "Antoine Brumel"
 		result, err := client.Music.GetByTileAndComposer(title, composer)
 		if err != nil {
 			t.Fatal(err)
