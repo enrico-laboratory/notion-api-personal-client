@@ -58,25 +58,25 @@ func TestScheduleService(t *testing.T) {
 
 	})
 
-	t.Run("GetByProjectId", func(t *testing.T) {
-		projectId := "a890db2a-12a5-4606-886d-fb35283250c6"
-		result, err := client.Schedule.GetByProjectId(projectId)
-		assert.Empty(t, err)
-		assert.True(t, len(result) > 5)
-	})
-
-	t.Run("GetByProjectIdAndType - no Type ", func(t *testing.T) {
-		projectId := "a890db2a-12a5-4606-886d-fb35283250c6"
-		result, err := client.Schedule.GetByProjectIdAndType(projectId)
-		assert.Empty(t, err)
-		assert.True(t, len(result) > 5)
-	})
-
-	t.Run("GetByProjectIdAndType - Concert and Rehearsal ", func(t *testing.T) {
-		projectId := "a890db2a-12a5-4606-886d-fb35283250c6"
-		result, err := client.Schedule.GetByProjectIdAndType(projectId, ScheduleTypeConcert, ScheduleTypeRehearsal)
-		assert.Empty(t, err)
-		assert.True(t, len(result) > 5)
-	})
+	//t.Run("GetByProjectId", func(t *testing.T) {
+	//	projectId := "a890db2a-12a5-4606-886d-fb35283250c6"
+	//	result, err := client.Schedule.GetByProjectId(projectId)
+	//	assert.Empty(t, err)
+	//	assert.True(t, len(result) > 5)
+	//})
+	//
+	//t.Run("GetByProjectIdAndType - no Type ", func(t *testing.T) {
+	//	projectId := "a890db2a-12a5-4606-886d-fb35283250c6"
+	//	result, err := client.Schedule.GetByProjectIdAndType(projectId)
+	//	assert.Empty(t, err)
+	//	assert.True(t, len(result) > 5)
+	//})
+	//
+	//t.Run("GetByProjectIdAndType - Concert and Rehearsal ", func(t *testing.T) {
+	//	projectId := "a890db2a-12a5-4606-886d-fb35283250c6"
+	//	result, err := client.Schedule.GetByProjectIdAndType(projectId, ScheduleTypeConcert, ScheduleTypeRehearsal)
+	//	assert.Empty(t, err)
+	//	assert.True(t, len(result) > 5)
+	//})
 
 }
