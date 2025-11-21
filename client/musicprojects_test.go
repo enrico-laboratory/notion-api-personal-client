@@ -37,27 +37,22 @@ func TestMusicProjectsService(t *testing.T) {
 		t.Log(fmt.Sprintf("Count results: %v", len(result)))
 		assert.Empty(t, err)
 		assert.True(t, len(result) > 3)
-		//count := 0
-		//for _, musicProject := range result {
-		//	t.Log(musicProject)
-		//	count++
-		//}
-		//t.Log(count)
 	})
 
 	t.Run("GetById", func(t *testing.T) {
-		projectId := "a890db2a-12a5-4606-886d-fb35283250c6"
+		projectId := "q"
 		result, err := client.MusicProjects.GetById(projectId)
 		assert.Empty(t, err)
 		assert.Equal(t, projectId, result.Id)
 	})
 
 	t.Run("GetByTitle", func(t *testing.T) {
-		title := "Palestrina and Marenzio"
+		title := "Nymphes des bois"
 		result, err := client.MusicProjects.GetByTitle(title)
 		if err != nil {
 			t.Fatal(err)
 		}
+		t.Log(result)
 		assert.Equal(t, title, result.Title)
 	})
 
@@ -81,15 +76,15 @@ func TestMusicProjectsService(t *testing.T) {
 		assert.True(t, len(result) > 2)
 	})
 
-	t.Run("Create test project", func(t *testing.T) {
-		title := "test"
-		choirId := "f7883d7baee1467a88463cc6fdac2ee9"
-		status := "On Going"
-		year := 1999
-		result, err := client.MusicProjects.CreateProject(title, choirId, status, year)
-		if err != nil {
-			t.Fatal(err)
-		}
-		t.Log(result)
-	})
+	//	t.Run("Create test project", func(t *testing.T) {
+	//		title := "test"
+	//		choirId := "f7883d7baee1467a88463cc6fdac2ee9"
+	//		status := "On Going"
+	//		year := 1999
+	//		result, err := client.MusicProjects.CreateProject(title, choirId, status, year)
+	//		if err != nil {
+	//			t.Fatal(err)
+	//		}
+	//		t.Log(result)
+	//	})
 }

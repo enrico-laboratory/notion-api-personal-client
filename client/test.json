@@ -1,0 +1,19 @@
+
+{
+  "filter": {
+    "and": [
+      {
+        "property": "Order",
+        "title": {
+          "equals": "%v"
+        }
+      },
+      {
+        "property": "Music Project",
+        "relation": {
+          "equals": "%v"
+        }
+      }
+    ]
+  }
+}

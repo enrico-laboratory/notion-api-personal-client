@@ -212,6 +212,7 @@ func parseMusicProject(u *unparsedmodels.MusicProject, p *parsedmodels.MusicProj
 	p.ChoirRollup = choirRollup
 	p.Excerpt = excerpt
 	p.Poster = u.Properties.Poster.URL
+	p.Ticket = u.Properties.Ticket.URL
 }
 
 type createProjectRequest struct {

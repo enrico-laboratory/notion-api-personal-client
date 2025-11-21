@@ -13,4 +13,5 @@ type MusicProject struct {
 	ChoirRollup    string    `bson:"choir_rollup" json:"choir_rollup"`
 	Excerpt        string    `bson:"excerpt" json:"excerpt"`
 	Poster         string    `bson:"poster" json:"poster"`
+	Ticket         string    `bson:"ticket" json:"ticket"`
 }

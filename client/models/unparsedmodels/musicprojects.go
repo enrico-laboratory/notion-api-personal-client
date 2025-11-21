@@ -76,6 +76,7 @@ type MusicProject struct {
 		Title     Title    `json:"Title"`
 		Poster    Url      `json:"Poster"`
 		Excerpt   RichText `json:"Excerpt"`
+		Ticket    Url      `json:"Ticket"`
 	} `json:"properties"`
 	URL string `json:"url"`
 }
