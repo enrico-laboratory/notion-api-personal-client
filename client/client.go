@@ -38,8 +38,11 @@ type NotionApiClient struct {
 
 func NewClient(token string) (*NotionApiClient, error) {
 
-	if os.Getenv("NOTION_TOKEN") == "" {
-		return nil, errors.New("NOTION_TOKEN not found in the env variables")
+	if token == "" {
+		token = os.Getenv("NOTION_TOKEN")
+		if token == "" {
+			return nil, errors.New("NOTION_TOKEN not found in the env variables")
+		}
 	}
 
 	var cfg config
